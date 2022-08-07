@@ -1,3 +1,7 @@
+### bunrest
+
+[![NPM Version][npm-version-image]][npm-url]
+
 ### bunrest is a express like api for [bun](https://github.com/oven-sh/bun) http server (limited method supported)
 
 ## Get started
@@ -55,3 +59,6 @@ server.listen(3000, () => {
   console.log('App is listening on port 3000');
 });
 ```
+
+[npm-url]: https://www.npmjs.com/package/bunrest
+[npm-version-image]: https://badgen.net/npm/v/bunrest
