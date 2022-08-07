@@ -25,10 +25,6 @@ server.put('/test', (req, res) => {
 server.post('/test', (req, res) => {
   res.status(200).json({ message: 'succeed' });
 });
-
-server.listen(3000, () => {
-  console.log('App is listening on port 3000');
-});
 ```
 
 ### Router
@@ -50,4 +46,12 @@ router.put('/test', (req, res) => {
 })
 
 server.use('/your_route_path', router);
+```
+
+### Start the server, listen to port
+
+```js
+server.listen(3000, () => {
+  console.log('App is listening on port 3000');
+});
 ```
