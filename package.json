@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "module": "src/index.js",
   "scripts": {
-    "start": "bun run index.js",
+    "start": "./node_modules.bun > index.js",
     "test": "bun run test/server.test.js"
   },
   "devDependencies": {

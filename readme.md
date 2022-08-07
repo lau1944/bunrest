@@ -1,13 +1,53 @@
-## Getting Started
+### bunrest is a express like api for [bun](https://github.com/oven-sh/bun) http server (limited method supported)
 
-### Cloning the repo
+## Get started
 
-```sh
-bun create blank ./NAME_HERE
+To create a bun project, see reference [here](https://github.com/oven-sh/bun#bun-create)
+
+### Server set up
+
+```js
+const App = require('bunrest');
+const server = new App.BunServer();
 ```
 
-### Execute a file (eg. src/index.js)
-    
-```sh
-bun run ./src/index.js
+After that, you can call http method just like on `express`
+
+```js
+server.get('/test', (req, res) => {
+  res.status(200).json({ message: 'succeed' });
+});
+
+server.put('/test', (req, res) => {
+  res.status(200).json({ message: 'succeed' });
+});
+
+server.post('/test', (req, res) => {
+  res.status(200).json({ message: 'succeed' });
+});
+
+server.listen(3000, () => {
+  console.log('App is listening on port 3000');
+});
+```
+
+### Router
+
+```js
+// add router
+const router = server.Router();
+
+router.get('/test', (req, res) => {
+  res.status(200).json({ message: 'Router succeed' });
+})
+
+router.post('/test', (req, res) => {
+  res.status(200).json({ message: 'Router succeed' });
+})
+
+router.put('/test', (req, res) => {
+  res.status(200).json({ message: 'Router succeed' });
+})
+
+server.use('/your_route_path', router);
 ```
