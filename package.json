@@ -1,8 +1,14 @@
 {
   "name": "bun-app",
-  "version": "0.0.3",
+  "version": "0.0.1",
   "module": "src/index.js",
+  "scripts": {
+    "start": "bun run index.js",
+    "test": "bun run test/server.test.js"
+  },
   "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.32.0",
+    "@typescript-eslint/parser": "^5.32.0",
     "bun-types": "latest"
   }
 }
