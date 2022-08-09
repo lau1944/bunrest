@@ -4,7 +4,7 @@
 
 ### bunrest is a express like api for [bun](https://github.com/oven-sh/bun) http server 
 
-This project is only experienmtal, DO NOT use it on production
+This project is only experimental, DO NOT use it on production
 
 ## Get started
 
