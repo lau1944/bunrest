@@ -1,38 +1,54 @@
 import { Server } from "bun";
 import { BunResponse } from "./response";
-import { RequestMethod, Handler, Middleware } from "./request";
+import { RequestMethod, Handler, Middleware, MiddlewareFunc } from "./request";
 import { Router } from "../router/router";
+import { Chain } from "../utils/chain";
 
 export class BunServer implements RequestMethod {
     private readonly requestMap: Map<string, Handler> = new Map<string, Handler>();
-    private readonly middlewareMap: Map<string, Middleware> = new Map<string, Middleware>();
+    private readonly middlewares: Middleware[] = [];
 
-    get(path: string, handler: Handler, middleware?: Middleware) {
+    get(path: string, handler: Handler, middleware?: MiddlewareFunc) {
         this.delegate(path, "GET", handler, middleware);
     };
 
-    put(path: string, handler: Handler, middleware?: Middleware) {
+    put(path: string, handler: Handler, middleware?: MiddlewareFunc) {
         this.delegate(path, "PUT", handler, middleware);
     };
 
-    post(path: string, handler: Handler, middleware?: Middleware) {
+    post(path: string, handler: Handler, middleware?: MiddlewareFunc) {
         this.delegate(path, "POST", handler, middleware);
     };
 
-    delete(path: string, handler: Handler, middleware?: Middleware) {
+    delete(path: string, handler: Handler, middleware?: MiddlewareFunc) {
         this.delegate(path, "DELETE", handler, middleware);
     };
 
-    options(path: string, handler: Handler, middleware?: Middleware) {
+    options(path: string, handler: Handler, middleware?: MiddlewareFunc) {
         this.delegate(path, "OPTIONS", handler, middleware);
     };
 
-    use(path: string, router: Router) {
-        router.use(path);
+    use(middleware: MiddlewareFunc): void;
+
+    use(path: string, router: Router): void;
+
+    use(arg1: string | MiddlewareFunc, arg2?: Router) {
+        // pass router
+        if (arg2 && typeof arg1 === "string") {
+            arg2.use(arg1);
+        }
+
+        // pass middleware
+        else {
+            this.middlewares.push({
+                path: "/",
+                middlewareFunc: arg1 as MiddlewareFunc,
+            })
+        }
     }
 
     Router() {
-        return new Router(this.requestMap, this.middlewareMap);
+        return new Router(this.requestMap, this.middlewares);
     }
 
     listen(port: string | number, callback?: () => void): Server {
@@ -45,15 +61,51 @@ export class BunServer implements RequestMethod {
         const that = this;
         return Bun.serve({
             port,
-            development: process.env.NODE_ENV !== 'production',
+            development: process.env.NODE_ENV !== "production",
             fetch(req) {
-                const path = req.url.replace(baseUrl, '');
+                const path = req.url.replace(baseUrl, "");
                 const handler: Handler = that.requestMap.get(`${req.method}:${path}`);
-                const middleware = that.middlewareMap.get(`${req.method}:${path}`);
 
-                const res = new BunResponse();
-                if (middleware) {
-                    middleware.apply(null, [req, res]);
+                var res = new BunResponse();
+
+                if (that.middlewares.length !== 0) {
+                    var plainMid = that.middlewares.filter((mid) => (mid.path === '/'));
+                    const chain = new Chain(req, res, plainMid);
+                    chain.next();
+
+                    if (res.isReady()) {
+                        return res.getResponse();
+                    }
+
+                    if (!chain.isFinish()) {
+                        throw new Error('Please call next() at the end of your middleware');
+                    }
+                }   
+
+                var middlewares = [];
+                for (var i = that.middlewares.length - 1; i >= 0; --i) {
+                    const target = that.middlewares[i];
+                    if (target.path === '/') {
+                        continue;
+                    }
+
+                    if (target.path === `${req.method}:${path}`) {
+                        middlewares.push(target);
+                        break;
+                    }
+                }
+
+                if (middlewares.length !== 0) {
+                    const chain = new Chain(req, res, middlewares);
+                    chain.next();
+
+                    if (res.isReady()) {
+                        return res.getResponse();
+                    }
+
+                    if (!chain.isFinish()) {
+                        throw new Error('Please call next() at the end of your middleware');
+                    }
                 }
 
                 if (handler) {
@@ -65,9 +117,12 @@ export class BunServer implements RequestMethod {
         });
     }
 
-    private delegate(path: string, method: string, handler: Handler, middleware?: Middleware) {
+    private delegate(path: string, method: string, handler: Handler, middleware?: MiddlewareFunc) {
         if (middleware) {
-            this.middlewareMap.set(`${method}:${path}`, middleware);
+            this.middlewares.push({
+                path: `${method}:${path}`,
+                middlewareFunc: middleware,
+            });
         }
         this.requestMap.set(`${method}:${path}`, handler);
     }
