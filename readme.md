@@ -52,6 +52,39 @@ router.put('/test', (req, res) => {
 server.use('/your_route_path', router);
 ```
 
+### Middlewares
+```js
+server.use((req, res, next) => {
+  console.log("middlewares called");
+  // to return result
+  res.status(500).send("server denied");
+});
+
+server.use((req, res, next) => {
+  console.log("middlewares called");
+  // to call next middlewares
+  next();
+})
+
+// or you can add the middlewares this way
+server.get('/user', 
+    (req, res) => { /** handle request **/ }, 
+    (req, res, next) => {
+      /**
+       *  Handle middlewares
+       * */
+    });
+
+// you can add middlewares on router too
+router.get('/user', 
+    (req, res) => { /** handle request **/ }, 
+    (req, res, next) => {
+      /**
+       *  Handle middlewares
+       * */
+    }); 
+```
+
 ### Start the server, listen to port
 
 ```js

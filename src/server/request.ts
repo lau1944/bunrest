@@ -1,8 +1,15 @@
-export type Handler = (req: Request, res: Response) => Response;
+import { BunResponse } from "./response";
 
-export type Middleware = (req: Request, res: Response, next) => Response | undefined;
+export type Handler = (req: Request, res: BunResponse) => void;
 
-export type RequestHandler = (path: string, handler: Handler, middleware?: Middleware) => void;
+export type MiddlewareFunc = (req: Request, res: BunResponse, next: Function) => void;
+
+export type RequestHandler = (path: string, handler: Handler, middleware?: MiddlewareFunc) => void;
+
+export type Middleware = {
+    path: string;
+    middlewareFunc: MiddlewareFunc;
+}
 
 export interface RequestMethod {
     get: RequestHandler;

@@ -1,4 +1,4 @@
-import { Handler, Middleware, RequestMethod } from "../server/request";
+import { Handler, Middleware, MiddlewareFunc, RequestMethod } from "../server/request";
 
 export type RouterMeta = {
     globalPath: string,
@@ -8,38 +8,40 @@ export type RouterMeta = {
 
 export class Router implements RequestMethod {
     private readonly requestMap: Map<string, Handler>;
-    private readonly middlewareMap: Map<string, Middleware>;
+    private readonly middlewares: Middleware[];
     private localRequestMap: Map<string, Handler> = new Map<string, Handler>();
-    private localMiddlewareMap: Map<string, Middleware> = new Map<string, Middleware>();
+    private localMiddlewares: Middleware[] = [];
 
-    constructor(requestMap: Map<string, Handler>, middlewareMap: Map<string, Middleware>) {
+    constructor(requestMap: Map<string, Handler>, middlewares: Middleware[]) {
         this.requestMap = requestMap;
-        this.middlewareMap = middlewareMap;
+        this.middlewares = middlewares;
     }
 
-    get(path: string, handler: Handler, middleware?: Middleware) {
+    get(path: string, handler: Handler, middleware?: MiddlewareFunc) {
         this.delegate(path, "GET", handler, middleware);
     }
 
-    post(path: string, handler: Handler, middleware?: Middleware) {
+    post(path: string, handler: Handler, middleware?: MiddlewareFunc) {
         this.delegate(path, "POST", handler, middleware);
     };
 
-    put(path: string, handler: Handler, middleware?: Middleware) {
+    put(path: string, handler: Handler, middleware?: MiddlewareFunc) {
         this.delegate(path, "PUT", handler, middleware);
     };
 
-    delete(path: string, handler: Handler, middleware?: Middleware) {
+    delete(path: string, handler: Handler, middleware?: MiddlewareFunc) {
         this.delegate(path, "DELETE", handler, middleware);
     };
 
     use(globalPath: string) {
-        // iterate middlewares
-        this.localMiddlewareMap.forEach((value, key) => {
-            const temp: string[] = key.split(":");
+        this.localMiddlewares.forEach((mid) => {
+            const temp: string[] = mid.path.split(":");
             const newPath = globalPath + temp[1];
             const newKey = `${temp[0]}:${newPath}`
-            this.middlewareMap.set(newKey, value);
+            this.middlewares.push({
+                path: newKey,
+                middlewareFunc: mid.middlewareFunc,
+            });
         });
         // iterate request map
         this.localRequestMap.forEach((value, key) => {
@@ -50,13 +52,16 @@ export class Router implements RequestMethod {
         });
     }
 
-    options(path: string, handler: Handler, middleware?: Middleware) {
+    options(path: string, handler: Handler, middleware?: MiddlewareFunc) {
         this.delegate(path, "OPTIONS", handler, middleware);
     };
 
-    private delegate(localPath: string, method: string, handler: Handler, middleware?: Middleware) {
+    private delegate(localPath: string, method: string, handler: Handler, middleware?: MiddlewareFunc) {
         if (middleware) {
-            this.localMiddlewareMap.set(`${method}:${localPath}`, middleware);
+            this.localMiddlewares.push({
+                path: `${method}:${localPath}`,
+                middlewareFunc: middleware
+            });
         }
         this.localRequestMap.set(`${method}:${localPath}`, handler);
     }
