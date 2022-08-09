@@ -2,7 +2,9 @@
 
 [![NPM Version][npm-version-image]][npm-url]
 
-### bunrest is a express like api for [bun](https://github.com/oven-sh/bun) http server (limited method supported)
+### bunrest is a express like api for [bun](https://github.com/oven-sh/bun) http server 
+
+This project is only experienmtal, DO NOT use it on production
 
 ## Get started
 
