@@ -1,31 +1,31 @@
 {
-  "name": "bunrest",
-  "version": "0.0.3",
-  "module": "src/index.js",
-  "description": "A express like api for bun http server",
-  "scripts": {
-    "start": "./node_modules.bun > index.js",
-    "test": "bun run test/server.test.js"
-  },
-  "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^5.32.0",
-    "@typescript-eslint/parser": "^5.32.0",
-    "bun-types": "latest"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/lau1944/bunrest"
-  },
-  "keywords": [
-    "bun",
-    "express",
-    "http",
-    "rest"
-  ],
-  "author": "Jimmy leo",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/lau1944/bunrest/issues"
-  },
-  "homepage": "https://github.com/lau1944/bunrest"
+    "name": "bunrest",
+    "version": "0.0.4",
+    "module": "src/index.js",
+    "description": "A express like api for bun http server",
+    "scripts": {
+        "start": "./node_modules.bun > index.js",
+        "test": "bun run test/server.test.js"
+    },
+    "devDependencies": {
+        "@typescript-eslint/eslint-plugin": "^5.32.0",
+        "@typescript-eslint/parser": "^5.32.0",
+        "bun-types": "latest"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/lau1944/bunrest"
+    },
+    "keywords": [
+        "bun",
+        "express",
+        "http",
+        "rest"
+    ],
+    "author": "Jimmy leo",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/lau1944/bunrest/issues"
+    },
+    "homepage": "https://github.com/lau1944/bunrest"
 }

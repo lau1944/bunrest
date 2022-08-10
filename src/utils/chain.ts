@@ -12,12 +12,16 @@ export function Chain(req: Request, res: BunResponse, middlewares: Middleware[])
     this.isReady = false;
 
     this.next = () => {
-        if (this.isReady || this.isFinish()) {
+        if (this.isFinish()) {
             return;
         }
 
         const cur = this.middlewares[this.index++];
         this.isReady = cur();
+
+        if (this.isReady) {
+            return;
+        }
     }
 
     this.isFinish = () => {
