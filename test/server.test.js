@@ -2,35 +2,35 @@ const App = require('../index');
 
 const server = new App.BunServer();
 
-server.get('/test', (req, res) => {
+server.get('/', (req, res) => {
     res.status(200).json({ message: 'succeed' });
 }, (req, res, next) => {
     console.log('get');
     next();
 });
 
-server.put('/test', (req, res) => {
+server.put('/', (req, res) => {
     res.status(200).json({ message: 'succeed' });
 }, (req, res, next) => {
     console.log('put');
 });
 
-server.post('/test', (req, res) => {
+server.post('/', (req, res) => {
     res.status(200).json({ message: 'succeed' });
 });
 
-server.delete('/test', (req, res) => {
+server.delete('/', (req, res) => {
     res.status(200).json({ message: 'succeed' });
 });
 
-server.options('/test', (req, res) => {
+server.options('/', (req, res) => {
     res.status(200).json({ message: 'succeed' });
 });
 
 server.use((req, res, next) => {
     console.log('hello world1');
-    res.status(200).json('You got intercepted1!');
-    //next()
+    //res.status(200).json('You got intercepted1!');
+    next()
 });
 
 server.use((req, res, next) => {

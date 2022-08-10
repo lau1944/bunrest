@@ -66,7 +66,18 @@ export class BunServer implements RequestMethod {
                 const path = req.url.replace(baseUrl, "");
                 const handler: Handler = that.requestMap.get(`${req.method}:${path}`);
 
-                var res = new BunResponse();
+                var bunResponse = new BunResponse();
+                const res = new Proxy(bunResponse, {
+                    get(target, prop, receiver) {
+                        if (typeof target[prop] === 'function'
+                            && (prop === 'json' || prop === 'send')
+                            && target.isReady()) {
+                            throw new Error('You cannot send response twice');
+                        } else {
+                            return Reflect.get(target, prop, receiver);
+                        }
+                    }
+                });
 
                 if (that.middlewares.length !== 0) {
                     var plainMid = that.middlewares.filter((mid) => (mid.path === '/'));
@@ -80,7 +91,7 @@ export class BunServer implements RequestMethod {
                     if (!chain.isFinish()) {
                         throw new Error('Please call next() at the end of your middleware');
                     }
-                }   
+                }
 
                 var middlewares = [];
                 for (var i = that.middlewares.length - 1; i >= 0; --i) {
