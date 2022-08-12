@@ -1,14 +1,36 @@
-### bunrest
+# 🧄 bunrest
 
 [![NPM Version][npm-version-image]][npm-url]
 
+## What is bunrest
+
 ### bunrest is a express like api for [bun](https://github.com/oven-sh/bun) http server 
 
-This project is only experimental, DO NOT use it on production
+So you don't have to learn bun to create a http server.
 
-## Get started
+`This project is only experimental, DO NOT use it on production`
 
-To create a bun project, see reference [here](https://github.com/oven-sh/bun#bun-create)
+## Table of Contents
+
+- [Set up](#get-started)
+- [Usage](#usage)
+- [Router](#router)
+- [Middlewares](#middlewares)
+- [Error handling](#error-handling)
+- [Future](#next)
+
+
+### Get started
+
+To download bun
+
+```shell
+curl -fsSL https://bun.sh/install | bash
+```
+
+To create a bun project 
+
+see reference [here](https://github.com/oven-sh/bun#bun-create)
 
 ### Server set up
 
@@ -16,6 +38,8 @@ To create a bun project, see reference [here](https://github.com/oven-sh/bun#bun
 const App = require('bunrest');
 const server = new App.BunServer();
 ```
+
+### Usage 
 
 After that, you can call http method just like on `express`
 
@@ -34,6 +58,9 @@ server.post('/test', (req, res) => {
 ```
 
 ### Router
+The same as router, we create a router by calling `server.Router()`
+
+After creation, we attach the router to server by calling `server.use(your_router_reference)`
 
 ```js
 // add router
@@ -55,6 +82,13 @@ server.use('/your_route_path', router);
 ```
 
 ### Middlewares
+
+We have two ways to add middlewares
+
+1. `use` : Simply call `use` to add the middleware function.
+
+2. Add middleware at the end of your request handler.
+
 ```js
 server.use((req, res, next) => {
   console.log("middlewares called");
@@ -86,6 +120,29 @@ router.get('/user',
        * */
     }); 
 ```
+
+### Error handling
+
+To add a global handler, it's really similar to express but slightly different.
+
+```js
+server.use((req, res, err, next) => {
+    res.status(500).send('Error happened');
+ });
+
+```
+
+At this time, if we throw an error on default path `/`
+
+```js
+server.get('/', (req, res) => {
+  throw new Error('Oops');
+})
+```
+
+It will call the `error handler callback function` and return a `response`. 
+But if we have not specified a `response` to return, a `error page` will be displayed on the browser on debug mode, check more on [bun error handling](https://github.com/oven-sh/bun#error-handling)
+
 
 ### Start the server, listen to port
 

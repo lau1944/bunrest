@@ -1,14 +1,14 @@
 import { BunResponse } from "./response";
 
-export type Handler = (req: Request, res: BunResponse) => void;
+export type Handler = (req: Request, res: BunResponse, err?: Error, next?: () => {}) => void;
 
 export type MiddlewareFunc = (req: Request, res: BunResponse, next: Function) => void;
 
-export type RequestHandler = (path: string, handler: Handler, middleware?: MiddlewareFunc) => void;
+export type RequestHandler = (path: string, handler: Handler, middleware?: Handler) => void;
 
 export type Middleware = {
     path: string;
-    middlewareFunc: MiddlewareFunc;
+    middlewareFunc: Handler;
 }
 
 export interface RequestMethod {
