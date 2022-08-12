@@ -9,24 +9,24 @@ export class BunServer implements RequestMethod {
     private readonly middlewares: Middleware[] = [];
     private readonly errorHandlers: Handler[] = [];
 
-    get(path: string, handler: Handler, middleware?: Handler) {
-        this.delegate(path, "GET", handler, middleware);
+    get(path: string, ...handlers: Handler[]) {
+        this.delegate(path, "GET", handlers);
     };
 
-    put(path: string, handler: Handler, middleware?: Handler) {
-        this.delegate(path, "PUT", handler, middleware);
+    put(path: string, ...handlers: Handler[]) {
+        this.delegate(path, "PUT", handlers);
     };
 
-    post(path: string, handler: Handler, middleware?: Handler) {
-        this.delegate(path, "POST", handler, middleware);
+    post(path: string, ...handlers: Handler[]) {
+        this.delegate(path, "POST", handlers);
     };
 
-    delete(path: string, handler: Handler, middleware?: Handler) {
-        this.delegate(path, "DELETE", handler, middleware);
+    delete(path: string, ...handlers: Handler[]) {
+        this.delegate(path, "DELETE", handlers);
     };
 
-    options(path: string, handler: Handler, middleware?: Handler) {
-        this.delegate(path, "OPTIONS", handler, middleware);
+    options(path: string, ...handlers: Handler[]) {
+        this.delegate(path, "OPTIONS", handlers);
     };
 
     /**
@@ -145,6 +145,8 @@ export class BunServer implements RequestMethod {
                 if (res.isReady()) {
                     return res.getResponse();
                 }
+
+                throw err;
             }
         });
     }
@@ -164,13 +166,19 @@ export class BunServer implements RequestMethod {
         });
     }
 
-    private delegate(path: string, method: string, handler: Handler, middleware?: Handler) {
-        if (middleware) {
+    private delegate(path: string, method: string, handlers: Handler[]) {
+        const key = `${method}:${path}`;
+        for (var i = 0; i < handlers.length; ++i) {
+            const handler = handlers[i];
+            if (i == handlers.length - 1) {
+                this.requestMap.set(key, handler);
+                break;
+            }
+
             this.middlewares.push({
-                path: `${method}:${path}`,
-                middlewareFunc: middleware,
-            });
+                path: key,
+                middlewareFunc: handler,
+            });            
         }
-        this.requestMap.set(`${method}:${path}`, handler);
     }
 }

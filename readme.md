@@ -4,9 +4,15 @@
 
 ## What is bunrest
 
-### bunrest is a express like api for [bun](https://github.com/oven-sh/bun) http server 
+### bunrest is a express like api for [bun](https://github.com/oven-sh/bun) http server.
 
-So you don't have to learn bun to create a http server.
+## Features
+
+1. ⚡ BLAZING FAST. Bun is super fast...
+
+2. 0️⃣ dependencies, work seamlessly with Bun
+
+3. 0️⃣ learning curve. If you know ExpressJs, you can start a bun server.
 
 `This project is only experimental, DO NOT use it on production`
 
@@ -41,7 +47,7 @@ const server = new App.BunServer();
 
 ### Usage 
 
-After that, you can call http method just like on `express`
+After that, you can write http method just like on `express`
 
 ```js
 server.get('/test', (req, res) => {
@@ -87,9 +93,10 @@ We have two ways to add middlewares
 
 1. `use` : Simply call `use` to add the middleware function.
 
-2. Add middleware at the end of your request handler.
+2. Add middleware at the middle of your request function parameters.
 
 ```js
+// use
 server.use((req, res, next) => {
   console.log("middlewares called");
   // to return result
@@ -104,21 +111,12 @@ server.use((req, res, next) => {
 
 // or you can add the middlewares this way
 server.get('/user', 
-    (req, res) => { /** handle request **/ }, 
     (req, res, next) => {
-      /**
-       *  Handle middlewares
-       * */
+      // here to handle middleware for path '/user'
+    },
+    (req, res) => {
+      res.status(200).send('Hello');
     });
-
-// you can add middlewares on router too
-router.get('/user', 
-    (req, res) => { /** handle request **/ }, 
-    (req, res, next) => {
-      /**
-       *  Handle middlewares
-       * */
-    }); 
 ```
 
 ### Error handling

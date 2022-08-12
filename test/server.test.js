@@ -3,25 +3,27 @@ const App = require('../index');
 const server = new App.BunServer();
 
 server.get('/', (req, res) => {
+    console.log('call get /')
+    res.status(200).send('Succeed');
 });
 //add error handler 
-server.use((req, res, err, next) => {
-    //next()
-    res.status(500).send('Error happened');
-});
+// server.use((req, res, err, next) => {
+//     //next()
+//     res.status(500).send('Error happened');
+// });
 
-server.get('/test', (req, res) => {
-    throw new Error('error test');
-    res.status(200).json({ message: 'succeed' });
-}, (req, res, next) => {
+server.get('/test', (req, res, next) => {
     console.log('get');
-    next();
+    //next();
+}, (req, res) => {
+    //throw new Error('error test');
+    res.status(200).json({ message: 'succeed' });
 });
 
-server.put('/', (req, res) => {
-    res.status(200).json({ message: 'succeed' });
-}, (req, res, next) => {
+server.put('/', (req, res, next) => {
     console.log('put');
+}, (req, res) => {
+    res.status(200).json({ message: 'succeed' });
 });
 
 server.post('/', (req, res) => {
@@ -51,7 +53,9 @@ server.use((req, res, next) => {
 // add router
 const router = server.Router();
 
-router.get('/test', (req, res) => {
+router.get('/test', (req, res, next) => {
+    console.log('middleware on /test called');
+}, (req, res) => {
     res.status(200).json({ message: 'Router succeed' });
 });
 

@@ -17,20 +17,20 @@ export class Router implements RequestMethod {
         this.middlewares = middlewares;
     }
 
-    get(path: string, handler: Handler, middleware?: Handler) {
-        this.delegate(path, "GET", handler, middleware);
+    get(path: string, ...handlers: Handler[]) {
+        this.delegate(path, "GET", handlers);
     }
 
-    post(path: string, handler: Handler, middleware?: Handler) {
-        this.delegate(path, "POST", handler, middleware);
+    post(path: string, ...handlers: Handler[]) {
+        this.delegate(path, "POST", handlers);
     };
 
-    put(path: string, handler: Handler, middleware?: Handler) {
-        this.delegate(path, "PUT", handler, middleware);
+    put(path: string, ...handlers: Handler[]) {
+        this.delegate(path, "PUT", handlers);
     };
 
-    delete(path: string, handler: Handler, middleware?: Handler) {
-        this.delegate(path, "DELETE", handler, middleware);
+    delete(path: string, ...handlers: Handler[]) {
+        this.delegate(path, "DELETE", handlers);
     };
 
     use(middleware: Handler) {
@@ -59,17 +59,23 @@ export class Router implements RequestMethod {
         });
     }
 
-    options(path: string, handler: Handler, middleware?: Handler) {
-        this.delegate(path, "OPTIONS", handler, middleware);
+    options(path: string, ...handlers: Handler[]) {
+        this.delegate(path, "OPTIONS", handlers);
     };
 
-    private delegate(localPath: string, method: string, handler: Handler, middleware?: Handler) {
-        if (middleware) {
+    private delegate(localPath: string, method: string, handlers: Handler[]) {
+        const path = `${method}:${localPath}`;
+        for (var i = 0; i < handlers.length; ++i) {
+            const handler = handlers[i];
+            if (i == handlers.length - 1) {
+                this.localRequestMap.set(path, handler);
+                break;
+            }
+
             this.localMiddlewares.push({
-                path: `${method}:${localPath}`,
-                middlewareFunc: middleware
+                path: path,
+                middlewareFunc: handler,
             });
         }
-        this.localRequestMap.set(`${method}:${localPath}`, handler);
     }
 }
