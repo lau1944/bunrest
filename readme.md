@@ -4,7 +4,7 @@
 
 ## What is bunrest  👀
 
-### bunrest is a ExpressJs like api for [bun](https://github.com/oven-sh/bun) http server.
+### bunrest is an ExpressJs-like API for [bun](https://github.com/oven-sh/bun) http server.
 
 ## Features
 
