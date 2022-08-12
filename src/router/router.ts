@@ -23,15 +23,15 @@ export class Router implements RequestMethod {
 
     post(path: string, ...handlers: Handler[]) {
         this.delegate(path, "POST", handlers);
-    };
+    }
 
     put(path: string, ...handlers: Handler[]) {
         this.delegate(path, "PUT", handlers);
-    };
+    }
 
     delete(path: string, ...handlers: Handler[]) {
         this.delegate(path, "DELETE", handlers);
-    };
+    }
 
     use(middleware: Handler) {
         this.localMiddlewares.push({
@@ -61,11 +61,11 @@ export class Router implements RequestMethod {
 
     options(path: string, ...handlers: Handler[]) {
         this.delegate(path, "OPTIONS", handlers);
-    };
+    }
 
     private delegate(localPath: string, method: string, handlers: Handler[]) {
         const path = `${method}:${localPath}`;
-        for (var i = 0; i < handlers.length; ++i) {
+        for (let i = 0; i < handlers.length; ++i) {
             const handler = handlers[i];
             if (i == handlers.length - 1) {
                 this.localRequestMap.set(path, handler);

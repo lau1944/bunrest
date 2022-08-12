@@ -29,23 +29,23 @@ class BunServer implements RequestMethod {
 
     get(path: string, ...handlers: Handler[]) {
         this.delegate(path, "GET", handlers);
-    };
+    }
 
     put(path: string, ...handlers: Handler[]) {
         this.delegate(path, "PUT", handlers);
-    };
+    }
 
     post(path: string, ...handlers: Handler[]) {
         this.delegate(path, "POST", handlers);
-    };
+    }
 
     delete(path: string, ...handlers: Handler[]) {
         this.delegate(path, "DELETE", handlers);
-    };
+    }
 
     options(path: string, ...handlers: Handler[]) {
         this.delegate(path, "OPTIONS", handlers);
-    };
+    }
 
     /**
      * Add middleware
@@ -107,7 +107,7 @@ class BunServer implements RequestMethod {
                 const handler: Handler = that.requestMap.get(`${req.method}:${path}`);
 
                 if (that.middlewares.length !== 0) {
-                    var plainMid = that.middlewares.filter((mid) => (mid.path === '/'));
+                    const plainMid = that.middlewares.filter((mid) => (mid.path === '/'));
                     const chain = new Chain(req, res, plainMid);
                     chain.next();
 
@@ -120,8 +120,8 @@ class BunServer implements RequestMethod {
                     }
                 }
 
-                var middlewares = [];
-                for (var i = that.middlewares.length - 1; i >= 0; --i) {
+                const middlewares = [];
+                for (let i = that.middlewares.length - 1; i >= 0; --i) {
                     const target = that.middlewares[i];
                     if (target.path === '/') {
                         continue;
@@ -171,7 +171,7 @@ class BunServer implements RequestMethod {
     }
 
     private responseProxy(): BunResponse {
-        var bunResponse = new BunResponse();
+        const bunResponse = new BunResponse();
         return new Proxy(bunResponse, {
             get(target, prop, receiver) {
                 if (typeof target[prop] === 'function'
@@ -187,7 +187,7 @@ class BunServer implements RequestMethod {
 
     private delegate(path: string, method: string, handlers: Handler[]) {
         const key = `${method}:${path}`;
-        for (var i = 0; i < handlers.length; ++i) {
+        for (let i = 0; i < handlers.length; ++i) {
             const handler = handlers[i];
             if (i == handlers.length - 1) {
                 this.requestMap.set(key, handler);
