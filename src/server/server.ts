@@ -61,7 +61,7 @@ export class BunServer implements RequestMethod {
         const that = this;
         return Bun.serve({
             port,
-            development: process.env.NODE_ENV !== "production",
+            development: process.env.SERVER_ENV !== "production",
             fetch(req) {
                 const path = req.url.replace(baseUrl, "");
                 const handler: Handler = that.requestMap.get(`${req.method}:${path}`);
