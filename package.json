@@ -1,6 +1,6 @@
 {
     "name": "bunrest",
-    "version": "0.0.8",
+    "version": "1.0.0",
     "module": "src/index.js",
     "description": "A express like api for bun http server",
     "scripts": {
@@ -17,10 +17,17 @@
         "url": "https://github.com/lau1944/bunrest"
     },
     "keywords": [
+        "bunrest",
         "bun",
         "express",
         "http",
-        "rest"
+        "rest",
+        "restful",
+        "web",
+        "app",
+        "server",
+        "framework",
+        "api"
     ],
     "author": "Jimmy leo",
     "license": "MIT",

@@ -10,11 +10,9 @@
 
 1. ⚡ BLAZING FAST. Bun is super fast...
 
-2. 0️⃣ dependencies, work seamlessly with Bun
+2.  0️⃣  dependencies, work seamlessly with Bun
 
-3. 0️⃣ learning curve. If you know ExpressJs, you can start a bun server.
-
-`This project is only experimental, DO NOT use it on production`
+3.  0️⃣  learning curve. If you know ExpressJs, you can start a bun server.
 
 ## Table of Contents
 
