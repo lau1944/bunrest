@@ -2,9 +2,12 @@
 
 [![NPM Version][npm-version-image]][npm-url]
 
+
 ### bunrest is a express like api for [bun](https://github.com/oven-sh/bun) http server 
 
-This project is only experimental, DO NOT use it on production
+So you don't have to learn bun to create a http server.
+
+`This project is only experimental, DO NOT use it on production`
 
 ## Get started
 
