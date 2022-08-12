@@ -2,7 +2,14 @@ const App = require('../index');
 
 const server = new App.BunServer();
 
+// add error handler 
+// server.use((req, res, err, next) => {
+//     next()
+//     //res.status(500).send('Error happened');
+// });
+
 server.get('/test', (req, res) => {
+    throw new Error('error test');
     res.status(200).json({ message: 'succeed' });
 }, (req, res, next) => {
     console.log('get');
@@ -29,12 +36,13 @@ server.options('/test', (req, res) => {
 
 server.use((req, res, next) => {
     console.log('hello world1');
-    res.status(200).json('You got intercepted1!');
-    //next()
+    //res.status(200).json('You got intercepted1!');
+    next()
 });
 
 server.use((req, res, next) => {
-    console.log('hello world2');
+    console.log('hello world22');
+    next();
     //res.status(200).json('You got intercepted2!');
 });
 

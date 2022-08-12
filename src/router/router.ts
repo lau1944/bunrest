@@ -1,4 +1,4 @@
-import { Handler, Middleware, MiddlewareFunc, RequestMethod } from "../server/request";
+import { Handler, Middleware, RequestMethod } from "../server/request";
 
 export type RouterMeta = {
     globalPath: string,
@@ -17,23 +17,23 @@ export class Router implements RequestMethod {
         this.middlewares = middlewares;
     }
 
-    get(path: string, handler: Handler, middleware?: MiddlewareFunc) {
+    get(path: string, handler: Handler, middleware?: Handler) {
         this.delegate(path, "GET", handler, middleware);
     }
 
-    post(path: string, handler: Handler, middleware?: MiddlewareFunc) {
+    post(path: string, handler: Handler, middleware?: Handler) {
         this.delegate(path, "POST", handler, middleware);
     };
 
-    put(path: string, handler: Handler, middleware?: MiddlewareFunc) {
+    put(path: string, handler: Handler, middleware?: Handler) {
         this.delegate(path, "PUT", handler, middleware);
     };
 
-    delete(path: string, handler: Handler, middleware?: MiddlewareFunc) {
+    delete(path: string, handler: Handler, middleware?: Handler) {
         this.delegate(path, "DELETE", handler, middleware);
     };
 
-    use(middleware: MiddlewareFunc) {
+    use(middleware: Handler) {
         this.localMiddlewares.push({
             path: "/",
             middlewareFunc: middleware,
@@ -59,11 +59,11 @@ export class Router implements RequestMethod {
         });
     }
 
-    options(path: string, handler: Handler, middleware?: MiddlewareFunc) {
+    options(path: string, handler: Handler, middleware?: Handler) {
         this.delegate(path, "OPTIONS", handler, middleware);
     };
 
-    private delegate(localPath: string, method: string, handler: Handler, middleware?: MiddlewareFunc) {
+    private delegate(localPath: string, method: string, handler: Handler, middleware?: Handler) {
         if (middleware) {
             this.localMiddlewares.push({
                 path: `${method}:${localPath}`,
