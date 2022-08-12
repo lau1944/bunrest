@@ -1,6 +1,6 @@
 import { Server } from "bun";
 import { BunResponse } from "./response";
-import { RequestMethod, Handler, Middleware, MiddlewareFunc } from "./request";
+import { RequestMethod, Handler, Middleware } from "./request";
 import { Router } from "../router/router";
 import { Chain } from "../utils/chain";
 
