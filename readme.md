@@ -2,9 +2,9 @@
 
 [![NPM Version][npm-version-image]][npm-url]
 
-## What is bunrest
+## What is bunrest  👀
 
-### bunrest is a express like api for [bun](https://github.com/oven-sh/bun) http server.
+### bunrest is a ExpressJs like api for [bun](https://github.com/oven-sh/bun) http server.
 
 ## Features
 
@@ -42,7 +42,7 @@ see reference [here](https://github.com/oven-sh/bun#bun-create)
 
 ```js
 const App = require('bunrest');
-const server = new App.BunServer();
+const server = App.Server();
 ```
 
 ### Usage 

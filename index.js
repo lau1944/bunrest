@@ -1,1 +1,1 @@
-export { BunServer } from './src/server/server';
+export { Server } from './src/server/server';

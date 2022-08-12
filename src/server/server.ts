@@ -4,7 +4,25 @@ import { RequestMethod, Handler, Middleware, MiddlewareFunc } from "./request";
 import { Router } from "../router/router";
 import { Chain } from "../utils/chain";
 
-export class BunServer implements RequestMethod {
+export function Server() {
+    return BunServer.instance;
+}
+
+class BunServer implements RequestMethod {
+    // singleton bun server
+    private static server?: BunServer;
+
+    constructor() {
+        if (BunServer.server) {
+            throw new Error('DONT use this constructor to create bun server, try Server()');
+        }
+        BunServer.server = this;
+    }
+
+    static get instance() {
+        return BunServer.server ?? (BunServer.server = new BunServer());
+    }
+
     private readonly requestMap: Map<string, Handler> = new Map<string, Handler>();
     private readonly middlewares: Middleware[] = [];
     private readonly errorHandlers: Handler[] = [];
@@ -80,11 +98,11 @@ export class BunServer implements RequestMethod {
 
     private openServer(port: string | number, baseUrl: string): Server {
         const that = this;
-        const res = this.responseProxy();
         return Bun.serve({
             port,
             development: process.env.SERVER_ENV !== "production",
             fetch(req) {
+                const res = that.responseProxy();
                 const path = req.url.replace(baseUrl, "");
                 const handler: Handler = that.requestMap.get(`${req.method}:${path}`);
 
@@ -135,6 +153,7 @@ export class BunServer implements RequestMethod {
                 return res.getResponse();
             },
             error(err: Error) {
+                const res = that.responseProxy();
                 // basically, next here is to ignore the error
                 const next = () => { }
                 that.errorHandlers.forEach((handler) => {
