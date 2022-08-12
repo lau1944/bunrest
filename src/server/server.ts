@@ -35,7 +35,7 @@ export class BunServer implements RequestMethod {
     use(arg1: string | MiddlewareFunc, arg2?: Router) {
         // pass router
         if (arg2 && typeof arg1 === "string") {
-            arg2.use(arg1);
+            arg2.attach(arg1);
         }
 
         // pass middleware

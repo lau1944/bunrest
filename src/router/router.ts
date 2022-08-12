@@ -33,7 +33,14 @@ export class Router implements RequestMethod {
         this.delegate(path, "DELETE", handler, middleware);
     };
 
-    use(globalPath: string) {
+    use(middleware: MiddlewareFunc) {
+        this.localMiddlewares.push({
+            path: "/",
+            middlewareFunc: middleware,
+        });
+    }
+
+    attach(globalPath: string) {
         this.localMiddlewares.forEach((mid) => {
             const temp: string[] = mid.path.split(":");
             const newPath = globalPath + temp[1];
