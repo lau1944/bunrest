@@ -2,7 +2,7 @@
     "name": "bunrest",
     "version": "1.0.1",
     "module": "src/index.js",
-    "description": "A express like api for bun http server",
+    "description": "An express-like API for bun http server",
     "scripts": {
         "start": "./node_modules.bun > index.js",
         "test": "bun run test/server.test.js"
