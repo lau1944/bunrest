@@ -1,6 +1,7 @@
 # 🧄 bunrest
 
 [![NPM Version][npm-version-image]][npm-url]
+[![CodeFactor](https://www.codefactor.io/repository/github/lau1944/bunrest/badge/main)](https://www.codefactor.io/repository/github/lau1944/bunrest/overview/main)
 
 ## What is bunrest  👀
 
