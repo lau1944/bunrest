@@ -1,7 +1,8 @@
-### bunrest
+# 🧄 bunrest
 
 [![NPM Version][npm-version-image]][npm-url]
 
+## What is bunrest
 
 ### bunrest is a express like api for [bun](https://github.com/oven-sh/bun) http server 
 
@@ -14,7 +15,7 @@ So you don't have to learn bun to create a http server.
 - [Set up](#get-started)
 - [Usage](#usage)
 - [Router](#router)
-- [Middlewares](#Middlewares)
+- [Middlewares](#middlewares)
 - [Error handling](#error-handling)
 - [Future](#next)
 
