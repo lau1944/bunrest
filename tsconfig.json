@@ -5,7 +5,7 @@
     ],
     "rootDirs": [                             /* List of root folders whose combined content represents the structure of the project at runtime. */
       "./src",
-      "./tests"
+      "./test"
     ],
     "target": "esnext",
     "module": "commonjs",

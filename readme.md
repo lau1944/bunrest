@@ -46,7 +46,7 @@ see reference [here](https://github.com/oven-sh/bun#bun-create)
 ### Server set up
 
 ```js
-const Server = require('bunrest');
+import Server from "bunrest";
 const app = Server();
 ```
 
