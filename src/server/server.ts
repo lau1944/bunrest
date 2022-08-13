@@ -86,7 +86,7 @@ class BunServer implements RequestMethod {
         }
     }
 
-    Router() {
+    router() {
         return new Router(this.requestMap, this.middlewares);
     }
 

@@ -3,12 +3,17 @@
     "lib": [
       "ESNext"
     ],
-    "module": "esnext",
+    "rootDirs": [                             /* List of root folders whose combined content represents the structure of the project at runtime. */
+      "./src",
+      "./tests"
+    ],
     "target": "esnext",
+    "module": "commonjs",
+    "esModuleInterop": true,
     // "bun-types" is the important part
     "types": [
       "bun-types"
     ],
-    "moduleResolution": "node"
+    "moduleResolution": "node",
   }
 }

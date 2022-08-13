@@ -1,6 +1,6 @@
 import { BunResponse } from "./response";
 
-export type Handler = (req: Request, res: BunResponse, err?: Error, next?: () => {}) => void;
+export type Handler = (req: Request, res: BunResponse, next?: () => {}, err?: Error) => void;
 
 export type MiddlewareFunc = (req: Request, res: BunResponse, next: Function) => void;
 

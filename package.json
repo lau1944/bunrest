@@ -1,11 +1,10 @@
 {
     "name": "bunrest",
-    "version": "1.0.1",
-    "module": "src/index.js",
+    "version": "1.0.2",
     "description": "An express-like API for bun http server",
     "scripts": {
-        "start": "./node_modules.bun > index.js",
-        "test": "bun run test/server.test.js"
+        "start": "bun run index.js",
+        "test": "bun wiptest test"
     },
     "devDependencies": {
         "@typescript-eslint/eslint-plugin": "^5.32.0",
