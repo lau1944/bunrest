@@ -7,6 +7,7 @@
 
 [![NPM Version][npm-version-image]][npm-url]
 [![CodeFactor](https://www.codefactor.io/repository/github/lau1944/bunrest/badge/main)](https://www.codefactor.io/repository/github/lau1944/bunrest/overview/main)
+![NPM Downloads][npm-downloads-image]
 
 ## What is bunrest  👀
 
@@ -166,3 +167,4 @@ Server rendering, websocket
 
 [npm-url]: https://www.npmjs.com/package/bunrest
 [npm-version-image]: https://badgen.net/npm/v/bunrest
+[npm-downloads-image]: https://badgen.net/npm/dm/bunrest
