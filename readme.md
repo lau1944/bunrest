@@ -1,3 +1,8 @@
+<p align="center">
+  <a href="https://bun.sh"><img src="https://img.icons8.com/external-victoruler-flat-victoruler/344/external-baozi-chinese-new-year-victoruler-flat-victoruler.png" alt="Logo" height=200></a>
+  <br />
+</p>
+
 # 🧄 bunrest
 
 [![NPM Version][npm-version-image]][npm-url]
