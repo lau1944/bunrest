@@ -73,14 +73,14 @@ class BunServer implements RequestMethod {
 
         // pass middleware or global error handler
         else {
-            if (arg1.length == 3) {
+            if (arg1.length === 3) {
                 this.middlewares.push({
                     path: "/",
                     middlewareFunc: arg1 as Handler,
                 });
             }
 
-            else if (arg1.length == 4) {
+            else if (arg1.length === 4) {
                 this.errorHandlers.push(arg1 as Handler);
             }
         }

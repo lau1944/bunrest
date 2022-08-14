@@ -8,7 +8,6 @@ export function Chain(req: Request, res: BunResponse, middlewares: Middleware[])
             return res.isReady();
         }
     });
-    this.index = 0;
     this.isReady = false;
 
     this.next = () => {
@@ -16,7 +15,7 @@ export function Chain(req: Request, res: BunResponse, middlewares: Middleware[])
             return;
         }
 
-        const cur = this.middlewares[this.index++];
+        const cur = this.middlewares.shift();
         this.isReady = cur();
 
         if (this.isReady) {
@@ -25,6 +24,6 @@ export function Chain(req: Request, res: BunResponse, middlewares: Middleware[])
     }
 
     this.isFinish = () => {
-        return this.index === this.middlewares.length;
+        return this.middlewares.length === 0;
     };
 }

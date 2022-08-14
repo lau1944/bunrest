@@ -30,6 +30,10 @@ app.use((req, res, next) => {
     next();
 });
 
+app.use((req, res, next) => {
+    next();
+});
+
 app.get('/mid', (req, res, next) => {
     res.status(200).send('Middleware /mid');
 }, (req, res) => {});
