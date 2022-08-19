@@ -170,6 +170,7 @@ app.listen(3000, () => {
 ```
 
 <br />
+
 ### Request and Response object
 
 To simulate the `ExpressJs` API, the default `request` and `response` object on `bunjs` is not ideal.
