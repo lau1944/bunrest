@@ -10,7 +10,7 @@ export type Handler = (
 export type MiddlewareFunc = (
   req: Request,
   res: BunResponse,
-  next: Function
+  next: () => {},
 ) => void;
 
 export type RequestHandler = (path: string, ...handlers: Handler[]) => void;

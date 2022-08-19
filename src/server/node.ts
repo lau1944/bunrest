@@ -1,4 +1,3 @@
-import { KeyObject } from "crypto";
 
 export class TrieTree<k extends string, v> {
   private readonly root: Node<k, v>;
@@ -10,7 +9,7 @@ export class TrieTree<k extends string, v> {
   get(path: string): TrieLeaf<k, v> {
     const { method, paths } = this.validate(path);
     paths.shift();
-    let node: Node<k, v> = this.root;
+    const node: Node<k, v> = this.root;
     const params = {}
     return {
       routeParams: params,
@@ -123,11 +122,11 @@ class Node<k, v> {
     return this.path;
   }
 
-  getValue(): any {
+  getValue(): v {
     return this.value;
   }
 
-  getObject(): Object {
+  getObject(): any {
     return {
       path: this.path,
       value: this.value,
