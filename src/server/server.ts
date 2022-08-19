@@ -3,7 +3,7 @@ import { BunResponse } from "./response";
 import { RequestMethod, Handler, Middleware, BunRequest } from "./request";
 import { Router } from "../router/router";
 import { Chain } from "../utils/chain";
-import { TrieLeaf, TrieTree } from "./node";
+import { TrieLeaf, TrieTree } from "./trie-tree";
 
 export function server() {
     return BunServer.instance;

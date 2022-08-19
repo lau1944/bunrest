@@ -1,4 +1,4 @@
-import { TrieTree } from "../server/node";
+import { TrieTree } from "../server/trie-tree";
 import { Handler, Middleware, RequestMethod } from "../server/request";
 
 export type RouterMeta = {
