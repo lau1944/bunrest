@@ -1,3 +1,4 @@
+import { TrieTree } from "../server/node";
 import { Handler, Middleware, RequestMethod } from "../server/request";
 
 export type RouterMeta = {
@@ -7,12 +8,12 @@ export type RouterMeta = {
 };
 
 export class Router implements RequestMethod {
-    private readonly requestMap: Map<string, Handler>;
+    private readonly requestMap: TrieTree<string, Handler>;
     private readonly middlewares: Middleware[];
     private localRequestMap: Map<string, Handler> = new Map<string, Handler>();
     private localMiddlewares: Middleware[] = [];
 
-    constructor(requestMap: Map<string, Handler>, middlewares: Middleware[]) {
+    constructor(requestMap: TrieTree<string, Handler>, middlewares: Middleware[]) {
         this.requestMap = requestMap;
         this.middlewares = middlewares;
     }
@@ -42,9 +43,9 @@ export class Router implements RequestMethod {
 
     attach(globalPath: string) {
         this.localMiddlewares.forEach((mid) => {
-            const temp: string[] = mid.path.split(":");
+            const temp: string[] = mid.path.split("-");
             const newPath = globalPath + temp[1];
-            const newKey = `${temp[0]}:${newPath}`
+            const newKey = `${temp[0]}-${newPath}`
             this.middlewares.push({
                 path: newKey,
                 middlewareFunc: mid.middlewareFunc,
@@ -52,10 +53,10 @@ export class Router implements RequestMethod {
         });
         // iterate request map
         this.localRequestMap.forEach((value, key) => {
-            const temp: string[] = key.split(":");
+            const temp: string[] = key.split("-");
             const newPath = globalPath + temp[1];
-            const newKey = `${temp[0]}:${newPath}`
-            this.requestMap.set(newKey, value);
+            const newKey = `${temp[0]}-${newPath}`
+            this.requestMap.insert(newKey, value);
         });
     }
 
@@ -64,7 +65,7 @@ export class Router implements RequestMethod {
     }
 
     private delegate(localPath: string, method: string, handlers: Handler[]) {
-        const path = `${method}:${localPath}`;
+        const path = `${method}-${localPath}`;
         for (let i = 0; i < handlers.length; ++i) {
             const handler = handlers[i];
             if (i == handlers.length - 1) {

@@ -227,7 +227,7 @@ describe('Error test', () => {
             expect(res.status).toBe(500);
             expect(await res.text()).toBe('Err /err')
         } catch (e) {
-            throw e;
+            //throw e;
         } finally {
             server.stop();
         }

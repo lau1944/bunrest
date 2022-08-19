@@ -1,6 +1,6 @@
 import { BunResponse } from "./response";
 
-export type Handler = (req: Request, res: BunResponse, next?: () => {}, err?: Error) => void;
+export type Handler = (req: BunRequest, res: BunResponse, next?: () => {}, err?: Error) => void;
 
 export type MiddlewareFunc = (req: Request, res: BunResponse, next: Function) => void;
 
@@ -17,4 +17,14 @@ export interface RequestMethod {
     put: RequestHandler;
     delete: RequestHandler;
     options: RequestHandler;
+}
+
+export interface BunRequest {
+    method: string;
+    request: Request;
+    path: string;
+    params?: { [key: string]: any };
+    query?: { [key: string]: any };
+    body?: { [key: string]: any };
+    bodys?: any;
 }

@@ -7,6 +7,11 @@ export class BunResponse {
         return this;
     }
 
+    option(option: ResponseInit): BunResponse {
+        this.options = Object.assign(this.options, option);
+        return this;
+    }
+
     statusText(text: string): BunResponse {
         this.options.statusText = text;
         return this;

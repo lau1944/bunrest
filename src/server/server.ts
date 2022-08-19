@@ -1,8 +1,9 @@
 import { Server } from "bun";
 import { BunResponse } from "./response";
-import { RequestMethod, Handler, Middleware } from "./request";
+import { RequestMethod, Handler, Middleware, BunRequest } from "./request";
 import { Router } from "../router/router";
 import { Chain } from "../utils/chain";
+import { TrieLeaf, TrieTree } from "./node";
 
 export function Server() {
     return BunServer.instance;
@@ -23,7 +24,7 @@ class BunServer implements RequestMethod {
         return BunServer.server ?? (BunServer.server = new BunServer());
     }
 
-    private readonly requestMap: Map<string, Handler> = new Map<string, Handler>();
+    private readonly requestMap: TrieTree<string, Handler> = new TrieTree();
     private readonly middlewares: Middleware[] = [];
     private readonly errorHandlers: Handler[] = [];
 
@@ -101,10 +102,15 @@ class BunServer implements RequestMethod {
         return Bun.serve({
             port,
             development: process.env.SERVER_ENV !== "production",
-            fetch(req) {
+            async fetch(req1: Request) {
+                const req: BunRequest = await that.bunRequest(req1);
+
                 const res = that.responseProxy();
-                const path = req.url.replace(baseUrl, "");
-                const handler: Handler = that.requestMap.get(`${req.method}:${path}`);
+                const leaf: TrieLeaf<string, Handler> = that.requestMap.get(`${req.method}-${req.path}`);
+                const handler: Handler = leaf.node?.getValue();
+
+                // append req route params
+                req.params = leaf.routeParams;
 
                 if (that.middlewares.length !== 0) {
                     const plainMid = that.middlewares.filter((mid) => (mid.path === '/'));
@@ -127,7 +133,7 @@ class BunServer implements RequestMethod {
                         continue;
                     }
 
-                    if (target.path === `${req.method}:${path}`) {
+                    if (target.path === `${req.method}-${req.path}`) {
                         middlewares.push(target);
                         break;
                     }
@@ -170,6 +176,30 @@ class BunServer implements RequestMethod {
         });
     }
 
+    private async bunRequest(req: Request): Promise<BunRequest> {
+        const { searchParams, pathname } = new URL(req.url);
+
+        const newReq: BunRequest = {
+            method: req.method,
+            path: pathname,
+            request: req,
+            query: {},
+            params: {}
+        };
+
+        // append query params
+        searchParams.forEach((v, k) => {
+            newReq.query[k] = v;
+        });
+
+        // append body
+        const body = await req.json;
+        newReq.body = body;
+        newReq.bodys = req.blob;
+
+        return newReq;
+    }
+
     private responseProxy(): BunResponse {
         const bunResponse = new BunResponse();
         return new Proxy(bunResponse, {
@@ -186,11 +216,11 @@ class BunServer implements RequestMethod {
     }
 
     private delegate(path: string, method: string, handlers: Handler[]) {
-        const key = `${method}:${path}`;
+        const key = `${method}-${path}`;
         for (let i = 0; i < handlers.length; ++i) {
             const handler = handlers[i];
             if (i == handlers.length - 1) {
-                this.requestMap.set(key, handler);
+                this.requestMap.insert(key, handler);
                 break;
             }
 
