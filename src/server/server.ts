@@ -5,7 +5,7 @@ import { Router } from "../router/router";
 import { Chain } from "../utils/chain";
 import { TrieLeaf, TrieTree } from "./node";
 
-export function Server() {
+export function server() {
     return BunServer.instance;
 }
 

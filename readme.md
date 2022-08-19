@@ -60,8 +60,8 @@ bun install bunrest
 
 
 ```js
-import Server from "bunrest";
-const app = Server();
+import server from "bunrest";
+const app = server();
 ```
 
 ### Usage 
@@ -73,7 +73,7 @@ app.get('/test', (req, res) => {
   res.status(200).json({ message: req.query });
 });
 
-app.put('/test:id', (req, res) => {
+app.put('/test/:id', (req, res) => {
   res.status(200).json({ message: req.params.id });
 });
 

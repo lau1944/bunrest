@@ -1,8 +1,8 @@
-import Server from '../index';
+import server from '../index';
 import { describe, it, expect } from "bun:test";
 import router from './router.test';
 
-const app = Server();
+const app = server();
 
 app.get('/', (req, res) => {
     res.status(200).send('GET /');

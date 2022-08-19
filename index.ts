@@ -1,7 +1,7 @@
 'use strict';
 
-import { Server } from './src/server/server';
+import { server } from './src/server/server';
 
-export default Server;
+export default server;
 
 export { TrieTree } from './src/server/node';
