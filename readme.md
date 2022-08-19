@@ -28,6 +28,7 @@
 - [Router](#router)
 - [Middlewares](#middlewares)
 - [Error handling](#error-handling)
+- [Request and Response object](#request-and-response-object)
 - [Future](#next)
 
 
@@ -69,15 +70,15 @@ After that, you can write http method just like on `express`
 
 ```js
 app.get('/test', (req, res) => {
-  res.status(200).json({ message: 'succeed' });
+  res.status(200).json({ message: req.query });
 });
 
-app.put('/test', (req, res) => {
-  res.status(200).json({ message: 'succeed' });
+app.put('/test:id', (req, res) => {
+  res.status(200).json({ message: req.params.id });
 });
 
-app.post('/test', (req, res) => {
-  res.status(200).json({ message: 'succeed' });
+app.post('/test/:id/:name', (req, res) => {
+  res.status(200).json({ message: req.params });
 });
 ```
 
@@ -168,9 +169,59 @@ app.listen(3000, () => {
 });
 ```
 
-### Next
+### Request and Response object
 
-Server rendering, websocket
+To simulate the `ExpressJs` API, the default `request` and `response` object on `bunjs` is not ideal.
+
+On `bunrest`, we create our own `request` and `response` object, here is the blueprint of these two objects.
+
+
+Request interface
+
+```js
+export interface BunRequest {
+  method: string;
+  request: Request;
+  path: string;
+  header?: { [key: string]: any };
+  params?: { [key: string]: any };
+  query?: { [key: string]: any };
+  body?: { [key: string]: any };
+  blob?: any;
+}
+```
+
+Response interface
+```js
+export interface BunResponse {
+    status(code: number): BunResponse;
+    option(option: ResponseInit): BunResponse;
+    statusText(text: string): BunResponse;
+    json(body: any): void;
+    send(body: any): void;
+    // nodejs way to set headers
+    setHeader(key: string, value: any);
+    // nodejs way to get headers
+    getHeader();this.options.headers;
+    headers(header: HeadersInit): BunResponse;
+    getResponse(): Response;
+    isReady(): boolean;turn !!this.response;
+}
+```
+
+The `req` and `res` arguments inside every handler function is the `BunRequest` and `BunResponse` type
+
+So you can use it like on Express
+
+```js
+const handler = (req, res) => {
+  const { name } = req.params;
+  const { id } = req.query;
+  res.setHeader('Content-Type', 'application/text');
+  res.status(200).send('No');
+}
+```
+
 
 [npm-url]: https://www.npmjs.com/package/bunrest
 [npm-version-image]: https://badgen.net/npm/v/bunrest

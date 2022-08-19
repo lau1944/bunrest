@@ -184,7 +184,8 @@ class BunServer implements RequestMethod {
             path: pathname,
             request: req,
             query: {},
-            params: {}
+            params: {},
+            header: {},
         };
 
         // append query params
@@ -193,10 +194,15 @@ class BunServer implements RequestMethod {
         });
 
         // append body
-        const body = await req.json;
+        const body: { [key: string]: any } = await req.json();
         newReq.body = body;
-        newReq.bodys = req.blob;
+        newReq.blob = req.blob();
 
+        // append headers
+        req.headers.forEach((v, k) => {
+            newReq.header[k] = v;
+        });
+        
         return newReq;
     }
 

@@ -25,6 +25,25 @@ export class BunResponse {
         this.response = new Response(body, this.options);
     }
 
+    // nodejs way to set headers
+    setHeader(key: string, value: any) {
+        if (!key || !value) {
+            throw new Error('Headers key or value should not be empty');
+        }
+
+        const headers = this.options.headers;
+        if (!headers) {
+            this.options.headers = { keys: value };
+        }
+        this.options.headers[key] = value;
+        return this;
+    }
+
+    // nodejs way to get headers
+    getHeader() {
+        return this.options.headers;
+    }
+
     headers(header: HeadersInit): BunResponse {
         this.options.headers = header;
         return this;
