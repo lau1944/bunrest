@@ -222,6 +222,9 @@ const handler = (req, res) => {
 }
 ```
 
+### Next
+
+Server rendering, websocket
 
 [npm-url]: https://www.npmjs.com/package/bunrest
 [npm-version-image]: https://badgen.net/npm/v/bunrest
