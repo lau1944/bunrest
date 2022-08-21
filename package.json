@@ -1,6 +1,6 @@
 {
-  "name": "bun-rest",
-  "version": "1.1.0",
+  "name": "bunrest",
+  "version": "1.0.9",
   "description": "An express-like API for bun http server",
   "scripts": {
     "start": "bun run index.js",
