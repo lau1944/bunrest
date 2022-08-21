@@ -10,7 +10,11 @@ export function Chain(req: BunRequest, res: BunResponse, middlewares: Middleware
     });
     this.isReady = false;
 
-    this.next = () => {
+    this.next = (err: Error) => {
+        if (err) {
+            throw err;
+        }
+
         if (this.isFinish()) {
             return;
         }

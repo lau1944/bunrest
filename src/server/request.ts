@@ -3,14 +3,14 @@ import { BunResponse } from "./response";
 export type Handler = (
   req: BunRequest,
   res: BunResponse,
-  next?: () => {},
+  next?: (err: Error) => {},
   err?: Error
 ) => void;
 
 export type MiddlewareFunc = (
   req: Request,
   res: BunResponse,
-  next: () => {},
+  next: (err: Error) => {},
 ) => void;
 
 export type RequestHandler = (path: string, ...handlers: Handler[]) => void;
@@ -32,7 +32,7 @@ export interface BunRequest {
   method: string;
   request: Request;
   path: string;
-  header?: { [key: string]: any };
+  headers?: { [key: string]: any };
   params?: { [key: string]: any };
   query?: { [key: string]: any };
   body?: { [key: string]: any };
