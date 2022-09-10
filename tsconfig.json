@@ -1,5 +1,8 @@
 {
   "compilerOptions": {
+    "declaration": true,
+    "sourceRoot": "lib",
+    "outDir": "dist",
     "lib": [
       "ESNext"
     ],

@@ -3,14 +3,14 @@ import { BunResponse } from "./response";
 export type Handler = (
   req: BunRequest,
   res: BunResponse,
-  next?: (err: Error) => {},
+  next?: (err?: Error) => {},
   err?: Error
 ) => void;
 
 export type MiddlewareFunc = (
   req: Request,
   res: BunResponse,
-  next: (err: Error) => {},
+  next: (err?: Error) => {},
 ) => void;
 
 export type RequestHandler = (path: string, ...handlers: Handler[]) => void;

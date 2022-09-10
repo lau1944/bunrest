@@ -1,5 +1,5 @@
-'use strict';
+"use strict";
 
-import server from './src/bun-rest';
+import server from "./src";
 
 export default server;

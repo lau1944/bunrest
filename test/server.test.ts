@@ -1,4 +1,4 @@
-import server from '../index';
+import server from '../src';
 import { describe, it, expect } from "bun:test";
 import router from './router.test';
 
