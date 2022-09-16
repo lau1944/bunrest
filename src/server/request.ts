@@ -1,3 +1,4 @@
+import { SSLServeOptions } from "bun";
 import { BunResponse } from "./response";
 
 export type Handler = (
@@ -10,7 +11,7 @@ export type Handler = (
 export type MiddlewareFunc = (
   req: Request,
   res: BunResponse,
-  next: (err?: Error) => {},
+  next: (err?: Error) => {}
 ) => void;
 
 export type RequestHandler = (path: string, ...handlers: Handler[]) => void;
@@ -37,4 +38,19 @@ export interface BunRequest {
   query?: { [key: string]: any };
   body?: { [key: string]: any };
   blob?: any;
+}
+
+export interface SSLOptions {
+  keyFile: string;
+  certFile: string;
+  passphrase?: string;
+  caFile?: string;
+  dhParamsFile?: string;
+
+  /**
+   * This sets `OPENSSL_RELEASE_BUFFERS` to 1.
+   * It reduces overall performance but saves some memory.
+   * @default false
+   */
+  lowMemoryMode?: boolean;
 }

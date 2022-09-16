@@ -1,9 +1,10 @@
 import { Server } from "bun";
 import { BunResponse } from "./response";
-import { RequestMethod, Handler, Middleware, BunRequest } from "./request";
+import { RequestMethod, Handler, Middleware, BunRequest, SSLOptions } from "./request";
 import { Router } from "../router/router";
 import { Chain } from "../utils/chain";
 import { TrieLeaf, TrieTree } from "./trie-tree";
+import { Options } from "supports-color";
 
 export function server() {
     return BunServer.instance;
@@ -91,16 +92,22 @@ class BunServer implements RequestMethod {
         return new Router(this.requestMap, this.middlewares);
     }
 
-    listen(port: string | number, callback?: () => void): Server {
+    listen(port: string | number, callback?: () => void, options?: SSLOptions): Server {
         const baseUrl = "http://localhost:" + port;
         callback?.call(null);
-        return this.openServer(port, baseUrl);
+        return this.openServer(port, baseUrl, options);
     }
 
-    private openServer(port: string | number, baseUrl: string): Server {
+    private openServer(port: string | number, baseUrl: string, options?: SSLOptions): Server {
         const that = this;
         return Bun.serve({
             port,
+            keyFile: options?.keyFile,
+            certFile: options?.certFile,
+            passphrase: options?.passphrase,
+            caFile: options?.caFile,
+            dhParamsFile: options?.dhParamsFile,
+            lowMemoryMode: options?.lowMemoryMode,
             development: process.env.SERVER_ENV !== "production",
             async fetch(req1: Request) {
                 const req: BunRequest = await that.bunRequest(req1);
