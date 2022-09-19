@@ -1,7 +1,7 @@
-// import Server from "../index";
-// import cors from "cors";
+import Server from "../index";
+import cors from "cors";
 
-// const app = Server();
+const app = Server();
 
 // var whitelist = ["localhost:3000"];
 // var corsOptions = {
@@ -14,12 +14,16 @@
 //   },
 // };
 
-// app.use(cors(corsOptions));
+//app.use(cors(corsOptions));
 
-// app.post("/user", (req, res) => {
-//   res.status(200).json(req.body);
-// });
+app.get("/user", (req, res) => {
+  res.status(200).json(req.body);
+});
 
-// app.listen(3000, () => {
-//   console.log("Running on port 3000");
-// });
+app.use((req, res, next, err) => {
+    res.status(500).send('Error happened');
+ });
+
+app.listen(3000, () => {
+  console.log("Running on port 3000");
+});

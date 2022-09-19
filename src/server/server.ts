@@ -161,6 +161,9 @@ class BunServer implements RequestMethod {
 
                 if (handler) {
                     handler.apply(that, [req, res]);
+                } else {
+                    // cannot find path
+                    throw new Error(`Cannot find path on ${req.path}`);
                 }
 
                 return res.getResponse();
