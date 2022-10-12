@@ -1,3 +1,3 @@
-import server from '../src';
+import server from '../src copy';
 
 const app = server();

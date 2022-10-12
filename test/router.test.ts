@@ -1,4 +1,4 @@
-import Server from '../src';
+import Server from '../src copy';
 
 const app = Server();
 const router = app.router();
