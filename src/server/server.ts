@@ -4,7 +4,7 @@ import { RequestMethod, Handler, Middleware, BunRequest, SSLOptions } from "./re
 import { Router } from "../router/router";
 import { Chain } from "../utils/chain";
 import { TrieLeaf, TrieTree } from "./trie-tree";
-import { Options } from "supports-color";
+import { encodeBase64 } from "../utils/base64";
 
 export function server() {
     return BunServer.instance;
@@ -113,7 +113,7 @@ class BunServer implements RequestMethod {
                 const req: BunRequest = await that.bunRequest(req1);
 
                 const res = that.responseProxy();
-                const leaf: TrieLeaf<string, Handler> = that.requestMap.get(`${req.method}-${req.path}`);
+                const leaf: TrieLeaf<string, Handler> = that.requestMap.get(`${req.method}~${encodeBase64(req.path)}`);
                 const handler: Handler = leaf.node?.getValue();
 
                 // append req route params
@@ -140,7 +140,7 @@ class BunServer implements RequestMethod {
                         continue;
                     }
 
-                    if (target.path === `${req.method}-${req.path}`) {
+                    if (target.path === `${req.method}~${encodeBase64(req.path)}`) {
                         middlewares.push(target);
                         break;
                     }
@@ -233,7 +233,7 @@ class BunServer implements RequestMethod {
     }
 
     private delegate(path: string, method: string, handlers: Handler[]) {
-        const key = `${method}-${path}`;
+        const key = `${method}~${encodeBase64(path)}`;
         for (let i = 0; i < handlers.length; ++i) {
             const handler = handlers[i];
             if (i == handlers.length - 1) {

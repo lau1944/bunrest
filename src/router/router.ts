@@ -1,5 +1,6 @@
 import { TrieTree } from "../server/trie-tree";
 import { Handler, Middleware, RequestMethod } from "../server/request";
+import { encodeBase64 } from "../utils/base64";
 
 export type RouterMeta = {
     globalPath: string,
@@ -43,9 +44,9 @@ export class Router implements RequestMethod {
 
     attach(globalPath: string) {
         this.localMiddlewares.forEach((mid) => {
-            const temp: string[] = mid.path.split("-");
+            const temp: string[] = mid.path.split("~");
             const newPath = globalPath + temp[1];
-            const newKey = `${temp[0]}-${newPath}`
+            const newKey = `${temp[0]}~${encodeBase64(newPath)}`
             this.middlewares.push({
                 path: newKey,
                 middlewareFunc: mid.middlewareFunc,
@@ -53,9 +54,9 @@ export class Router implements RequestMethod {
         });
         // iterate request map
         this.localRequestMap.forEach((value, key) => {
-            const temp: string[] = key.split("-");
+            const temp: string[] = key.split("~");
             const newPath = globalPath + temp[1];
-            const newKey = `${temp[0]}-${newPath}`
+            const newKey = `${temp[0]}~${encodeBase64(newPath)}`
             this.requestMap.insert(newKey, value);
         });
     }
@@ -65,7 +66,7 @@ export class Router implements RequestMethod {
     }
 
     private delegate(localPath: string, method: string, handlers: Handler[]) {
-        const path = `${method}-${localPath}`;
+        const path = `${method}~${encodeBase64(localPath)}`;
         for (let i = 0; i < handlers.length; ++i) {
             const handler = handlers[i];
             if (i == handlers.length - 1) {
