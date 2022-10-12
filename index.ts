@@ -1,5 +1,5 @@
 "use strict";
 
-import server from "./src copy";
+import server from "./src";
 
 export default server;
