@@ -1,4 +1,4 @@
-
+import { encodeBase64, decodeBase64 } from "../utils/base64";
 export class TrieTree<k extends string, v> {
   private readonly root: Node<k, v>;
 
@@ -25,7 +25,7 @@ export class TrieTree<k extends string, v> {
     let index = 0;
     while (index < paths.length) {
       const children = node.getChildren();
-      const currentPath = `${method}-${paths[index]}`;
+      const currentPath = `${method}~${encodeBase64(paths[index])}`;
       let target = children.find((e) => e.getPath() === currentPath);
       if (!target) {
         target = new Node<string, v>(
@@ -54,7 +54,7 @@ export class TrieTree<k extends string, v> {
       .getChildren()
       .filter(
         (e) =>
-          e.getPath() === `${method}-${paths[0]}` || e.getPath().includes(":")
+          e.getPath() === `${method}~${encodeBase64(paths[0])}` || e.getPath().includes(":")
       );
 
     if (target.length === 0) {
@@ -66,7 +66,7 @@ export class TrieTree<k extends string, v> {
     let next: Node<k, v> = null;
     target.forEach((e) => {
       if (e.getPath().includes(":")) {
-        const routeParams = e.getPath().replace(`${method}-:`, "");
+        const routeParams = e.getPath().replace(`${method}~:`, "");
         params[routeParams] = paths[0];
       }
 
@@ -81,12 +81,12 @@ export class TrieTree<k extends string, v> {
   }
 
   private validate(path: string) {
-    if (!path.includes("-")) {
-      throw new Error("Path should contains a separator -");
+    if (!path.includes("~")) {
+      throw new Error("Path should contains a separator ~");
     }
 
-    const [method, httpPath] = path.split("-");
-    const paths = httpPath.split("/");
+    const [method, httpPath] = path.split("~");
+    const paths = decodeBase64(httpPath).split("/");
     return {
       method,
       paths,
