@@ -130,7 +130,6 @@ class BunServer implements RequestMethod {
         const tree: TrieTree<string, Handler> =
           that.requestMap[req.method.toLowerCase()];
         const leaf = tree.get(req.path);
-        console.log(leaf);
         const handlers: Handler[] = leaf.node?.getHandlers();
 
         // append req route params
