@@ -1,5 +1,5 @@
-import { SSLServeOptions } from "bun";
 import { BunResponse } from "./response";
+import { TrieTree } from "./trie-tree";
 
 export type Handler = (
   req: BunRequest,
@@ -54,3 +54,32 @@ export interface SSLOptions {
    */
   lowMemoryMode?: boolean;
 }
+
+/**
+ * request method mapper
+ */
+export interface RequestMapper {
+  get?: TrieTree<string, Handler>;
+  post?: TrieTree<string, Handler>;
+  put?: TrieTree<string, Handler>;
+  delete?: TrieTree<string, Handler>;
+  options?: TrieTree<string, Handler>;
+}
+
+export interface RequestTuple {
+  path: string;
+  handler: Handler;
+}
+
+/**
+ * Router method mapper
+ */
+export interface RouteRequestMapper {
+  get?: Array<RequestTuple>;
+  post?: Array<RequestTuple>;
+  put?: Array<RequestTuple>;
+  delete?: Array<RequestTuple>;
+  options?: Array<RequestTuple>;
+}
+
+export type RequestMapFunc = (method: string, path: string, handler: Handler) => void
