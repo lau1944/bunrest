@@ -129,6 +129,11 @@ class BunServer implements RequestMethod {
         const res = that.responseProxy();
         const tree: TrieTree<string, Handler> =
           that.requestMap[req.method.toLowerCase()];
+
+        if (!tree) {
+          throw new Error(`There is no path matches ${req.method}`);
+        }
+
         const leaf = tree.get(req.path);
         const handlers: Handler[] = leaf.node?.getHandlers();
 
