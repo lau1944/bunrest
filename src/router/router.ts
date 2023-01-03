@@ -37,6 +37,10 @@ export class Router implements RequestMethod {
     this.delegate(path, "POST", handlers);
   }
 
+  patch(path: string, ...handlers: Handler[]) {
+    this.delegate(path, "PATCH", handlers);
+  }
+
   put(path: string, ...handlers: Handler[]) {
     this.delegate(path, "PUT", handlers);
   }

@@ -50,6 +50,10 @@ class BunServer implements RequestMethod {
     this.delegate(path, "POST", handlers);
   }
 
+  patch(path: string, ...handlers: Handler[]) {
+    this.delegate(path, "PATCH", handlers);
+  }
+
   delete(path: string, ...handlers: Handler[]) {
     this.delegate(path, "DELETE", handlers);
   }

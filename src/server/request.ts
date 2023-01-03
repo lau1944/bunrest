@@ -24,6 +24,7 @@ export type Middleware = {
 export interface RequestMethod {
   get: RequestHandler;
   post: RequestHandler;
+  patch: RequestHandler;
   put: RequestHandler;
   delete: RequestHandler;
   options: RequestHandler;
@@ -61,6 +62,7 @@ export interface SSLOptions {
 export interface RequestMapper {
   get?: TrieTree<string, Handler>;
   post?: TrieTree<string, Handler>;
+  patch?: TrieTree<string, Handler>;
   put?: TrieTree<string, Handler>;
   delete?: TrieTree<string, Handler>;
   options?: TrieTree<string, Handler>;
@@ -77,6 +79,7 @@ export interface RequestTuple {
 export interface RouteRequestMapper {
   get?: Array<RequestTuple>;
   post?: Array<RequestTuple>;
+  patch?: Array<RequestTuple>;
   put?: Array<RequestTuple>;
   delete?: Array<RequestTuple>;
   options?: Array<RequestTuple>;

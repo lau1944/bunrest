@@ -16,6 +16,10 @@ app.post('/', (req, res) => {
     res.status(200).send('POST /');
 });
 
+app.patch('/', (req, res) => {
+    res.status(200).send('PATCH /');
+});
+
 app.delete('/', (req, res) => {
     res.status(200).send('DELETE /');
 });
@@ -72,6 +76,20 @@ describe('http test', () => {
             const res = await fetch(BASE_URL, { method: 'POST' });
             expect(res.status).toBe(200);
             expect(await res.text()).toBe('POST /')
+        } catch (e) {
+            throw e;
+        } finally {
+            server.stop();
+        }
+    });
+    it('PATCH', async () => {
+        const server = app.listen(3000, () => {
+            console.log('App is listening on port 3000');
+        });
+        try {
+            const res = await fetch(BASE_URL, { method: 'PATCH' });
+            expect(res.status).toBe(200);
+            expect(await res.text()).toBe('PATCH /')
         } catch (e) {
             throw e;
         } finally {
@@ -148,6 +166,20 @@ describe('router-test', () => {
                 const res = await fetch(url, { method: 'POST' });
                 expect(res.status).toBe(200);
                 expect(await res.text()).toBe('POST /route')
+            } catch (e) {
+                throw e;
+            } finally {
+                server.stop();
+            }
+        });
+        it('PATCH', async () => {
+            const server = app.listen(3000, () => {
+                console.log('App is listening on port 3000');
+            });
+            try {
+                const res = await fetch(url, { method: 'PATCH' });
+                expect(res.status).toBe(200);
+                expect(await res.text()).toBe('PATCH /route')
             } catch (e) {
                 throw e;
             } finally {

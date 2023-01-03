@@ -11,6 +11,10 @@ router.post('/', (req, res) => {
     res.status(200).send('POST /route')
 })
 
+router.patch('/', (req, res) => {
+    res.status(200).send('PATCH /route')
+})
+
 router.put('/', (req, res) => {
     res.status(200).send('PUT /route')
 })
