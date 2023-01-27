@@ -71,8 +71,9 @@ app.get("/user", (req, res) => {
   res.status(200).json(req.body);
 });
 
-router.get('/', (req, res) => {
-  res.status(200).json({ message: 'Router succeed' })
+router.get('/', async (req, res) => {
+  const data = await (await fetch('https://www.fishwatch.gov/api/species')).json()
+  res.status(200).json({ message: 'sdsdsd'})
 })
 
 app.use('/', router);
