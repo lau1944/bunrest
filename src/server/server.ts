@@ -185,12 +185,14 @@ class BunServer implements RequestMethod {
         }
 
         if (handlers) {
-          handlers.forEach((h) => {
-            h.apply(that, [req, res]);
-          });
-        } else {
-          // cannot find path
-          throw new Error(`Cannot find path on ${req.path}`);
+          // fix (issue 13) : How to make it work with async functions or Promises?
+          // fix where response data cannot be processed in promise block
+          for (let i = 0; i < handlers.length; ++i) {
+            const response = handlers[i].apply(that, [req, res]);
+            if (response instanceof Promise) {
+              await response;
+            }
+          }
         }
 
         return res.getResponse();

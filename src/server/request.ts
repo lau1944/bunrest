@@ -6,7 +6,7 @@ export type Handler = (
   res: BunResponse,
   next?: (err?: Error) => {},
   err?: Error
-) => void;
+) => void | Promise<any>;
 
 export type MiddlewareFunc = (
   req: Request,
