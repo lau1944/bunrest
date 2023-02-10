@@ -140,7 +140,6 @@ class BunServer implements RequestMethod {
 
         const leaf = tree.get(req.path);
         const handlers: Handler[] = leaf.node?.getHandlers();
-
         // append req route params
         req.params = leaf.routeParams;
 
@@ -184,14 +183,19 @@ class BunServer implements RequestMethod {
           }
         }
 
-        if (handlers) {
-          // fix (issue 13) : How to make it work with async functions or Promises?
-          // fix where response data cannot be processed in promise block
-          for (let i = 0; i < handlers.length; ++i) {
-            const response = handlers[i].apply(that, [req, res]);
-            if (response instanceof Promise) {
-              await response;
-            }
+        // fix (issue 4: unhandle route did not throw an error)
+        if (!handlers || handlers.length === 0) {
+          if (handlers.length === 0) {
+            throw new Error(`Cannot ${req.method} ${req.path}`);
+          }
+        }
+
+        // fix (issue 13) : How to make it work with async functions or Promises?
+        // fix where response data cannot be processed in promise block
+        for (let i = 0; i < handlers.length; ++i) {
+          const response = handlers[i].apply(that, [req, res]);
+          if (response instanceof Promise) {
+            await response;
           }
         }
 

@@ -250,6 +250,18 @@ describe('middleware test', () => {
 })
 
 describe('Error test', () => {
+    it('unhandle route', async () => {
+        const server = app.listen(3000, () => {
+            console.log('App is listening on port 3000');
+        })
+
+        try {
+            const res = await fetch(BASE_URL + '/some_random_route', { method: 'POST' });
+            expect(res.status).toBe(500);
+        } finally {
+            server.stop();
+        }
+    });
     it('error /err', async () => {
         const server = app.listen(3000, () => {
             console.log('App is listening on port 3000');
