@@ -237,7 +237,7 @@ class BunServer implements RequestMethod {
     });
 
     // append body
-    const body: { [key: string]: any } = await req.json();
+    const body: { [key: string]: any } = req.body ? await req.json() : null;
     req.arrayBuffer;
     newReq.body = body;
     newReq.blob = req.blob();
