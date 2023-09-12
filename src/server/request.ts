@@ -37,7 +37,7 @@ export interface BunRequest {
   headers?: { [key: string]: any };
   params?: { [key: string]: any };
   query?: { [key: string]: any };
-  body?: { [key: string]: any };
+  body?: { [key: string]: any } | string | undefined;
   blob?: any;
 }
 

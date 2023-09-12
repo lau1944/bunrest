@@ -85,7 +85,6 @@ class BunServer implements RequestMethod {
     if (arg2 && typeof arg1 === "string") {
       arg2.attach(arg1);
     }
-
     // pass middleware or global error handler
     else {
       if (arg1.length === 3) {
@@ -185,9 +184,7 @@ class BunServer implements RequestMethod {
 
         // fix (issue 4: unhandle route did not throw an error)
         if (!handlers || handlers.length === 0) {
-          if (handlers.length === 0) {
-            throw new Error(`Cannot ${req.method} ${req.path}`);
-          }
+          throw new Error(`Cannot ${req.method} ${req.path}`);
         }
 
         // fix (issue 13) : How to make it work with async functions or Promises?
@@ -213,15 +210,12 @@ class BunServer implements RequestMethod {
         if (res.isReady()) {
           return res.getResponse();
         }
-
-        throw err;
       },
     });
   }
 
   private async bunRequest(req: Request): Promise<BunRequest> {
     const { searchParams, pathname } = new URL(req.url);
-
     const newReq: BunRequest = {
       method: req.method,
       path: pathname,
@@ -236,10 +230,14 @@ class BunServer implements RequestMethod {
       newReq.query[k] = v;
     });
 
-    // append body
-    const body: { [key: string]: any } = req.body ? await req.json() : null;
+    // receive request body as string
+    const bodyStr = await req.text()
+    try {
+      newReq.body = JSON.parse(bodyStr)
+    } catch (err) {
+      newReq.body = bodyStr
+    }
     req.arrayBuffer;
-    newReq.body = body;
     newReq.blob = req.blob();
 
     // append headers

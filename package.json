@@ -6,9 +6,10 @@
   "description": "An express-like API for bun http server",
   "scripts": {
     "start": "bun run index.js",
-    "test": "bun wiptest test"
+    "test": "bun test"
   },
   "devDependencies": {
+    "@types/cors": "^2.8.13",
     "@typescript-eslint/eslint-plugin": "^5.32.0",
     "@typescript-eslint/parser": "^5.32.0",
     "bun-types": "latest"
