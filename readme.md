@@ -9,7 +9,7 @@
 [![CodeFactor](https://www.codefactor.io/repository/github/lau1944/bunrest/badge/main)](https://www.codefactor.io/repository/github/lau1944/bunrest/overview/main)
 ![NPM Downloads][npm-downloads-image]
 
-## What is bunrest  👀
+## What is bunrest 👀
 
 ### bunrest is an ExpressJs-like API for [bun](https://github.com/oven-sh/bun) http server.
 
@@ -17,9 +17,9 @@
 
 1. ⚡ BLAZING FAST. Bun is super fast...
 
-2.   0️⃣   dependencies, work seamlessly with Bun
+2. 0️⃣ dependencies, work seamlessly with Bun
 
-3.   0️⃣   learning curve. If you know ExpressJs, you can start a bun server.
+3. 0️⃣ learning curve. If you know ExpressJs, you can start a bun server.
 
 ## Table of Contents
 
@@ -31,7 +31,6 @@
 - [Request and Response object](#request-and-response-object)
 - [Future](#next)
 
-
 ### Get started
 
 To download bun
@@ -40,7 +39,7 @@ To download bun
 curl -fsSL https://bun.sh/install | bash
 ```
 
-To create a bun project 
+To create a bun project
 
 ```shell
 bun init
@@ -58,31 +57,31 @@ Download the package
 bun install bunrest
 ```
 
-
 ```js
 import server from "bunrest";
 const app = server();
 ```
 
-### Usage 
+### Usage
 
 After that, you can write http method just like on `express`
 
 ```js
-app.get('/test', (req, res) => {
+app.get("/test", (req, res) => {
   res.status(200).json({ message: req.query });
 });
 
-app.put('/test/:id', (req, res) => {
-  res.status(200).json({ message: req.params.id });
+app.put("/test/:id", (req, res) => {
+  res.status(200).json({ message: req.params?.id }); // params could be undefined
 });
 
-app.post('/test/:id/:name', (req, res) => {
+app.post("/test/:id/:name", (req, res) => {
   res.status(200).json({ message: req.params });
 });
 ```
 
 ### Router
+
 The same as above, we create a router by calling `server.Router()`
 
 After creation, we attach the router to server by calling `server.use(your_router_reference)`
@@ -91,19 +90,19 @@ After creation, we attach the router to server by calling `server.use(your_route
 // add router
 const router = app.router();
 
-router.get('/test', (req, res) => {
-  res.status(200).json({ message: 'Router succeed' });
-})
+router.get("/test", (req, res) => {
+  res.status(200).json({ message: "Router succeed" });
+});
 
-router.post('/test', (req, res) => {
-  res.status(200).json({ message: 'Router succeed' });
-})
+router.post("/test", (req, res) => {
+  res.status(200).json({ message: "Router succeed" });
+});
 
-router.put('/test', (req, res) => {
-  res.status(200).json({ message: 'Router succeed' });
-})
+router.put("/test", (req, res) => {
+  res.status(200).json({ message: "Router succeed" });
+});
 
-app.use('/your_route_path', router);
+app.use("/your_route_path", router);
 ```
 
 ### Middlewares
@@ -126,16 +125,18 @@ app.use((req, res, next) => {
   console.log("middlewares called");
   // to call next middlewares
   next();
-})
+});
 
 // or you can add the middlewares this way
-app.get('/user', 
-    (req, res, next) => {
-      // here to handle middleware for path '/user'
-    },
-    (req, res) => {
-      res.status(200).send('Hello');
-    });
+app.get(
+  "/user",
+  (req, res, next) => {
+    // here to handle middleware for path '/user'
+  },
+  (req, res) => {
+    res.status(200).send("Hello");
+  }
+);
 ```
 
 ### Error handling
@@ -144,28 +145,26 @@ To add a global handler, it's really similar to express but slightly different. 
 
 ```js
 app.use((req, res, next, err) => {
-    res.status(500).send('Error happened');
- });
-
+  res.status(500).send("Error happened");
+});
 ```
 
 At this time, if we throw an error on default path `/`
 
 ```js
-app.get('/', (req, res) => {
-  throw new Error('Oops');
-})
+app.get("/", (req, res) => {
+  throw new Error("Oops");
+});
 ```
 
-It will call the `error handler callback function` and return a `response`. 
+It will call the `error handler callback function` and return a `response`.
 But if we have not specified a `response` to return, a `error page` will be displayed on the browser on debug mode, check more on [bun error handling](https://github.com/oven-sh/bun#error-handling)
-
 
 ### Start the server, listen to port
 
 ```js
 app.listen(3000, () => {
-  console.log('App is listening on port 3000');
+  console.log("App is listening on port 3000");
 });
 ```
 
@@ -176,7 +175,6 @@ app.listen(3000, () => {
 To simulate the `ExpressJs` API, the default `request` and `response` object on `bunjs` is not ideal.
 
 On `bunrest`, we create our own `request` and `response` object, here is the blueprint of these two objects.
-
 
 Request interface
 
@@ -194,6 +192,7 @@ export interface BunRequest {
 ```
 
 Response interface
+
 ```js
 export interface BunResponse {
     status(code: number): BunResponse;
@@ -219,9 +218,9 @@ So you can use it like on Express
 const handler = (req, res) => {
   const { name } = req.params;
   const { id } = req.query;
-  res.setHeader('Content-Type', 'application/text');
-  res.status(200).send('No');
-}
+  res.setHeader("Content-Type", "application/text");
+  res.status(200).send("No");
+};
 ```
 
 ### Next
