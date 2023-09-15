@@ -28,6 +28,7 @@ export interface RequestMethod {
   put: RequestHandler;
   delete: RequestHandler;
   options: RequestHandler;
+  head: RequestHandler;
 }
 
 export interface BunRequest {
@@ -66,6 +67,7 @@ export interface RequestMapper {
   put?: TrieTree<string, Handler>;
   delete?: TrieTree<string, Handler>;
   options?: TrieTree<string, Handler>;
+  head?: TrieTree<string, Handler>;
 }
 
 export interface RequestTuple {
@@ -83,6 +85,7 @@ export interface RouteRequestMapper {
   put?: Array<RequestTuple>;
   delete?: Array<RequestTuple>;
   options?: Array<RequestTuple>;
+  head?: Array<RequestTuple>;
 }
 
 export type RequestMapFunc = (method: string, path: string, handler: Handler) => void

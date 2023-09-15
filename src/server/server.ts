@@ -62,6 +62,10 @@ class BunServer implements RequestMethod {
     this.delegate(path, "OPTIONS", handlers);
   }
 
+  head(path: string, ...handlers: Handler[]) {
+    this.delegate(path, "HEAD", handlers);
+  }
+
   /**
    * Add middleware
    * @param middleware
