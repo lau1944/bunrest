@@ -49,6 +49,10 @@ export class Router implements RequestMethod {
     this.delegate(path, "DELETE", handlers);
   }
 
+  head(path: string, ...handlers: Handler[]) {
+    this.delegate(path, "HEAD", handlers);
+  }
+
   use(middleware: Handler) {
     this.localMiddlewares.push({
       path: "/",

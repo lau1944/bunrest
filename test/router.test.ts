@@ -27,4 +27,8 @@ router.options('/', (req, res) => {
     res.status(200).send('OPTIONS /route')
 })
 
+router.head('/', (req, res) => {
+    res.status(200).send('HEAD /route')
+})
+
 export default router;
