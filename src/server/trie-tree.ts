@@ -69,10 +69,6 @@ export class TrieTree<k extends string, v extends Handler> {
 
       paths.shift();
       next = this.dig(e, paths, params);
-
-      if (next) {
-        return next;
-      }
     });
     return next;
   }
