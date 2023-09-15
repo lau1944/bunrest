@@ -60,8 +60,9 @@ export class TrieTree<k extends string, v extends Handler> {
       return null;
     }
 
-    let next: Node<k, v> = null;
-    target.forEach((e) => {
+    let next: Node<k, v> =  null
+    for (let i = 0; i < target.length; ++i) {
+      const e = target[i];
       if (e.getPath().startsWith(":")) {
         const routeParams = e.getPath().replace(":", "");
         params[routeParams] = paths[0];
@@ -69,7 +70,12 @@ export class TrieTree<k extends string, v extends Handler> {
 
       paths.shift();
       next = this.dig(e, paths, params);
-    });
+
+      if (next) {
+        return next;
+      }
+    }
+    
     return next;
   }
 
