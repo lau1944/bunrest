@@ -1,4 +1,4 @@
-import { Server } from "bun";
+import { Server, WebSocketHandler } from "bun";
 import { BunResponse } from "./response";
 import {
   RequestMethod,
@@ -7,7 +7,9 @@ import {
   BunRequest,
   SSLOptions,
   RequestMapper,
+  RequestMethodType,
 } from "./request";
+import { ExtraHandler, RestSocketHandler } from "./websocket";
 import { Router } from "../router/router";
 import { Chain } from "../utils/chain";
 import { TrieTree } from "./trie-tree";
@@ -37,6 +39,7 @@ class BunServer implements RequestMethod {
   private readonly requestMap: RequestMapper = {};
   private readonly middlewares: Middleware[] = [];
   private readonly errorHandlers: Handler[] = [];
+  private webSocketHandler: WebSocketHandler | undefined
 
   get(path: string, ...handlers: Handler[]) {
     this.delegate(path, "GET", handlers);
@@ -64,6 +67,18 @@ class BunServer implements RequestMethod {
 
   head(path: string, ...handlers: Handler[]) {
     this.delegate(path, "HEAD", handlers);
+  }
+
+  /**
+   * websocket interface
+   */
+  ws(msgHandler: RestSocketHandler, extra: ExtraHandler = null) {
+    this.webSocketHandler = {
+      message: msgHandler,
+      open: extra?.open,
+      close: extra?.close, 
+      drain: extra?.drain,
+    }
   }
 
   /**
@@ -202,6 +217,7 @@ class BunServer implements RequestMethod {
 
         return res.getResponse();
       },
+      websocket: this.webSocketHandler,
       error(err: Error) {
         const res = that.responseProxy();
         // basically, next here is to ignore the error
@@ -269,7 +285,7 @@ class BunServer implements RequestMethod {
     });
   }
 
-  private delegate(path: string, method: string, handlers: Handler[]) {
+  private delegate(path: string, method: RequestMethodType, handlers: Handler[]) {
     const key = path;
     for (let i = 0; i < handlers.length; ++i) {
       const handler = handlers[i];
@@ -286,7 +302,6 @@ class BunServer implements RequestMethod {
   }
 
   private submitToMap(method: string, path: string, handler: Handler) {
-    console.log(path);
     let targetTree: TrieTree<string, Handler> = this.requestMap[method];
     if (!targetTree) {
       this.requestMap[method] = new TrieTree();

@@ -1,5 +1,5 @@
 import server from '../src';
-import { describe, it, expect } from "bun:test";
+import { describe, it, expect, beforeAll, afterAll } from "bun:test";
 import router from './router.test';
 
 const app = server();
@@ -44,7 +44,7 @@ app.use((req, res, next) => {
 
 app.get('/mid', (req, res, next) => {
     res.status(200).send('Middleware /mid');
-}, (req, res) => {});
+}, (req, res) => { });
 
 app.get('/err', (req, res) => {
     throw new Error('Err');
@@ -54,6 +54,18 @@ app.get('/err', (req, res) => {
 app.use((req, res, next, err) => {
     res.status(500).send('Err /err');
 });
+
+app.ws((ws, msg) => {
+    ws.send(msg)
+}, {
+    open: (ws) => {
+        console.log('Websocket is turned on')
+    }, close: (ws) => {
+        console.log('Websocket is closed')
+    }, drain: (ws) => {
+        console.log('Websocket is drained')
+    }
+})
 
 const BASE_URL = 'http://localhost:3000';
 
@@ -277,6 +289,42 @@ describe('middleware test', () => {
             throw e;
         } finally {
             server.stop();
+        }
+    })
+})
+
+describe('websocket test', () => {
+    it(('ws'), () => {
+        let server = app.listen(3000, () => {
+            console.log('App is listening on port 3000');
+        });
+        try {
+            const socket = new WebSocket("ws://localhost:3000");
+            const msg = 'Hello world'
+            // message is received
+            socket.addEventListener("message", event => {
+                expect(event.data).toBe(msg)
+            });
+
+            // socket opened
+            socket.addEventListener("open", event => {
+                console.log('Open')
+                socket.send(msg)
+            });
+
+            // socket closed
+            socket.addEventListener("close", event => {
+                console.log('Close')
+            });
+
+            // error handler
+            socket.addEventListener("error", event => {
+                console.log('Error')
+            });
+        } catch (e) {
+            throw e
+        } finally {
+            server.stop()
         }
     })
 })
