@@ -29,7 +29,7 @@
 - [Middlewares](#middlewares)
 - [Error handling](#error-handling)
 - [Request and Response object](#request-and-response-object)
-- [Future](#next)
+- [Websocket](#websocket)
 
 
 ### Get started
@@ -224,9 +224,52 @@ const handler = (req, res) => {
 }
 ```
 
-### Next
+# websocket
 
-Server rendering, websocket
+<br> To handle websocket request, just a few steps to do </br>
+
+```js
+app.ws((ws, msg) => {
+   // here to handle incoming message
+    ws.send(msg)
+}, {
+    open: (ws) => {
+        console.log('Websocket is turned on')
+    }, close: (ws) => {
+        console.log('Websocket is closed')
+    }, drain: (ws) => {
+        console.log('Websocket is drained')
+    }
+})
+```
+
+<br> To connect to your websocket server </br>
+
+```js
+const socket = new WebSocket("ws://localhost:3000");
+            const msg = 'Hello world'
+            // message is received
+            socket.addEventListener("message", event => {
+                console.log(event.data)
+            });
+
+            // socket opened
+            socket.addEventListener("open", event => {
+                console.log('Open')
+                // here to send message
+                socket.send(msg)
+            });
+
+            // socket closed
+            socket.addEventListener("close", event => {
+                console.log('Close')
+            });
+
+            // error handler
+            socket.addEventListener("error", event => {
+                console.log('Error')
+            });
+```
 
 [npm-url]: https://www.npmjs.com/package/bunrest
 [npm-version-image]: https://badgen.net/npm/v/bunrest
