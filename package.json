@@ -1,6 +1,6 @@
 {
-  "name": "bun-rest",
-  "version": "1.3.3",
+  "name": "bunrest",
+  "version": "1.3.4",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "description": "An express-like API for bun http server",

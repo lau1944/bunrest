@@ -243,6 +243,7 @@ class BunServer implements RequestMethod {
       query: {},
       params: {},
       headers: {},
+      originalUrl: req.url,
     };
 
     // append query params
