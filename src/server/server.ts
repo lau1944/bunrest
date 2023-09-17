@@ -108,7 +108,7 @@ class BunServer implements RequestMethod {
     else {
       if (arg1.length === 3) {
         this.middlewares.push({
-          path: "/",
+          path: "*",
           middlewareFunc: arg1 as Handler,
         });
       } else if (arg1.length === 4) {
@@ -149,20 +149,10 @@ class BunServer implements RequestMethod {
       async fetch(req1: Request) {
         const req: BunRequest = await that.bunRequest(req1);
         const res = that.responseProxy();
-        const tree: TrieTree<string, Handler> =
-          that.requestMap[req.method.toLowerCase()];
 
-        if (!tree) {
-          throw new Error(`There is no path matches ${req.method}`);
-        }
-
-        const leaf = tree.get(req.path);
-        const handlers: Handler[] = leaf.node?.getHandlers();
-        // append req route params
-        req.params = leaf.routeParams;
-
+        // middlewares handler
         if (that.middlewares.length !== 0) {
-          const plainMid = that.middlewares.filter((mid) => mid.path === "/");
+          const plainMid = that.middlewares.filter((mid) => mid.path === "*");
           const chain = new Chain(req, res, plainMid);
           chain.next();
 
@@ -178,7 +168,7 @@ class BunServer implements RequestMethod {
         const middlewares = [];
         for (let i = that.middlewares.length - 1; i >= 0; --i) {
           const target = that.middlewares[i];
-          if (target.path === "/") {
+          if (target.path === "*") {
             continue;
           }
 
@@ -200,6 +190,19 @@ class BunServer implements RequestMethod {
             throw new Error("Please call next() at the end of your middleware");
           }
         }
+
+        // request handler
+        const tree: TrieTree<string, Handler> =
+          that.requestMap[req.method.toLowerCase()];
+
+        if (!tree) {
+          throw new Error(`There is no path matches ${req.method}`);
+        }
+
+        const leaf = tree.get(req.path);
+        const handlers: Handler[] = leaf.node?.getHandlers();
+        // append req route params
+        req.params = leaf.routeParams;
 
         // fix (issue 4: unhandle route did not throw an error)
         if (!handlers || handlers.length === 0) {
