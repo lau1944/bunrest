@@ -61,7 +61,12 @@ bun install bunrest
 
 ```js
 import server from "bunrest";
+
 const app = server();
+
+server.listen(3000, () => {
+  console.log('App is listening on port 3000: http://localhost:3000');
+});
 ```
 
 ### Usage 
