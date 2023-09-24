@@ -4,7 +4,7 @@ import router from './router.test';
 
 const app = server();
 
-app.get('/', (req, res) => {
+app.get('*', (req, res) => {
     res.status(200).send('GET /');
 });
 
@@ -29,7 +29,7 @@ app.options('/', (req, res) => {
 });
 
 app.head('/', (req, res) => {
-    res.status(200).setHeader('X-Custom-Header', 'Bun is awesome').send('');
+    res.status(200).setHeader('X-Custom-Header', 'Bun is awesome').send('HEAD /');
 });
 
 app.use('/route', router);
@@ -140,21 +140,20 @@ describe('http test', () => {
             server.stop();
         }
     });
-    // Doesn't work
-    // it('OPTIONS', async () => {
-    //     const server = app.listen(3000, () => {
-    //         console.log('App is listening on port 3000');
-    //     });
-    //     try {
-    //         const res = await fetch(BASE_URL, { method: 'OPTIONS' });
-    //         expect(res.status).toBe(200);
-    //         expect(await res.text()).toBe('OPTIONS /')
-    //     } catch (e) {
-    //         throw e;
-    //     } finally {
-    //         server.stop();
-    //     }
-    // });
+    it('OPTIONS', async () => {
+        const server = app.listen(3000, () => {
+            console.log('App is listening on port 3000');
+        });
+        try {
+            const res = await fetch(BASE_URL, { method: 'OPTIONS' });
+            expect(res.status).toBe(200);
+        //expect(await res.text()).toBe('OPTIONS /')
+        } catch (e) {
+            throw e;
+        } finally {
+            server.stop();
+        }
+    });
     it('HEAD', async () => {
         const server = app.listen(3000, () => {
             console.log('App is listening on port 3000');
@@ -163,6 +162,7 @@ describe('http test', () => {
             const res = await fetch(BASE_URL, { method: 'HEAD' });
             expect(res.status).toBe(200);
             expect(res.headers.get('X-Custom-Header')).toBe('Bun is awesome')
+            //expect(await res.text()).toBe('HEAD /')
         } catch (e) {
             throw e;
         } finally {

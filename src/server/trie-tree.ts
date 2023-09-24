@@ -24,6 +24,9 @@ export class TrieTree<k extends string, v extends Handler> {
     // const paths = this.validate(path);
     // // remove the first empty string
     // paths.shift();
+    if (path === '*') {
+      path = '/';
+    }
     const paths = path.split("/");
     let node: Node<string, v> = this.root;
     let index = 0;

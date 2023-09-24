@@ -76,6 +76,11 @@ router.get('/', async (req, res) => {
   res.status(200).json({ message: 'sdsdsd'})
 })
 
+router.options('/test', async (req, res) => {
+  //const data = await (await fetch('https://www.fishwatch.gov/api/species')).json()
+  res.status(200).json({ message: 'hihi'})
+})
+
 app.use('/', router);
 
 app.listen(3000, () => {

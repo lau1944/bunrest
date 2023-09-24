@@ -149,6 +149,7 @@ class BunServer implements RequestMethod {
       async fetch(req1: Request) {
         const req: BunRequest = await that.bunRequest(req1);
         const res = that.responseProxy();
+        
 
         // middlewares handler
         if (that.middlewares.length !== 0) {
@@ -217,7 +218,6 @@ class BunServer implements RequestMethod {
             await response;
           }
         }
-
         return res.getResponse();
       },
       websocket: this.webSocketHandler,

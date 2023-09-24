@@ -41,6 +41,10 @@ export class Router implements RequestMethod {
     this.delegate(path, "PATCH", handlers);
   }
 
+  options(path: string, ...handlers: Handler[]) {
+    this.delegate(path, "OPTIONS", handlers);
+  }
+
   put(path: string, ...handlers: Handler[]) {
     this.delegate(path, "PUT", handlers);
   }
@@ -55,7 +59,7 @@ export class Router implements RequestMethod {
 
   use(middleware: Handler) {
     this.localMiddlewares.push({
-      path: "/",
+      path: "*",
       middlewareFunc: middleware,
     });
   }
@@ -75,10 +79,6 @@ export class Router implements RequestMethod {
         this.requestMapFunc.apply(this, [method, path.join(globalPath, v.path), v.handler]);
       });
     }
-  }
-
-  options(path: string, ...handlers: Handler[]) {
-    this.delegate(path, "OPTIONS", handlers);
   }
 
   private delegate(localPath: string, method: string, handlers: Handler[]) {
