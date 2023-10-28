@@ -207,7 +207,9 @@ class BunServer implements RequestMethod {
 
         // fix (issue 4: unhandle route did not throw an error)
         if (!handlers || handlers.length === 0) {
-          throw new Error(`Cannot ${req.method} ${req.path}`);
+          console.error(`Cannot ${req.method} ${req.path}`);
+          res.status(404).send(`${req.method} ${req.path} with a 404`)
+          return res.getResponse()
         }
 
         // fix (issue 13) : How to make it work with async functions or Promises?
