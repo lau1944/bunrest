@@ -1,4 +1,6 @@
 import Server from '../src';
+import { describe, it, expect, beforeAll, afterAll } from "bun:test";
+import { Router } from './router/router';
 
 const app = Server();
 const router = app.router();
@@ -31,4 +33,4 @@ router.head('/', (req, res) => {
     res.status(200).send('HEAD /route')
 })
 
-export default router;
+export default router

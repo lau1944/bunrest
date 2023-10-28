@@ -82,6 +82,10 @@ export class Router implements RequestMethod {
   }
 
   private delegate(localPath: string, method: string, handlers: Handler[]) {
+    if (localPath === '/') {
+      localPath = ''
+    }
+    
     for (let i = 0; i < handlers.length; ++i) {
       const handler = handlers[i];
       if (i == handlers.length - 1) {

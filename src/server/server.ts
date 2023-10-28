@@ -150,6 +150,9 @@ class BunServer implements RequestMethod {
         const req: BunRequest = await that.bunRequest(req1);
         const res = that.responseProxy();
         
+        if (req.path.endsWith('/')) {
+          req.path = req.path.slice(0, req.path.length)
+        }
 
         // middlewares handler
         if (that.middlewares.length !== 0) {
@@ -292,7 +295,12 @@ class BunServer implements RequestMethod {
   }
 
   private delegate(path: string, method: RequestMethodType, handlers: Handler[]) {
-    const key = path;
+    let key = path;
+
+    if (key === '/') {
+      key = ''
+    }
+
     for (let i = 0; i < handlers.length; ++i) {
       const handler = handlers[i];
       if (i == handlers.length - 1) {
