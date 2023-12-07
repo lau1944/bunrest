@@ -1,7 +1,7 @@
-import { Handler, RequestTuple, RouteRequestMapper } from "./request";
+import { Handler, Route, RequestTuple, RouteRequestMapper } from "./request";
 
 //import { encodeBase64, decodeBase64 } from "../utils/base64";
-export class TrieTree<k extends string, v extends Handler> {
+export class TrieTree<k extends string, v extends Route> {
   private readonly root: Node<k, v>;
 
   constructor() {
@@ -78,7 +78,6 @@ export class TrieTree<k extends string, v extends Handler> {
         return next;
       }
     }
-    
     return next;
   }
 
@@ -101,23 +100,27 @@ export interface TrieLeaf<k, v> {
 // node of trie tree
 class Node<k, v> {
   private readonly path?: string;
-  private readonly handlers: Handler[] = [];
+  private readonly handlers: Route = {};
   private readonly children: Node<k, v>[] = [];
 
   constructor(path?: string) {
     this.path = path;
   }
 
-  insertChild(handler: Handler) {
-    this.handlers.push(handler);
+  insertChild(handlers: Route) {
+    this.handlers = handlers;
   }
 
   getChildren(): Node<k, v>[] {
     return this.children;
   }
 
-  getHandlers(): Handler[] {
-    return this.handlers;
+  getHandler(): Handler {
+    return this.handlers.handler;
+  }
+
+  getMiddlewares(): Handler[] {
+    return this.handlers.middlewareFuncs
   }
 
   getPath(): string {

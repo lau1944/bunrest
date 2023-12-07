@@ -4,7 +4,7 @@ import { BunResponse } from "../server/response";
 export function Chain(req: BunRequest, res: BunResponse, middlewares: Middleware[]) {
     this.middlewares = middlewares.map((mid) => {
         return () => {
-            mid.middlewareFunc(req, res, this.next);
+            mid(req, res, this.next);
             return res.isReady();
         }
     });
