@@ -12,12 +12,13 @@ app.use((req, res, next, err) => {
     res.status(500).send('Err /err');
 });
 
-const BASE_URL = 'http://localhost:5555';
+const URL_PORT = 5555;
+const BASE_URL = `http://localhost:${URL_PORT}`;
 
 describe('no handler test', () => {
     it('GET', async () => {
-        const server = app.listen(5555, () => {
-            console.log('App is listening on port 5555');
+        const server = app.listen(URL_PORT, () => {
+            console.log(`App is listening on port ${URL_PORT}`);
         });
         try {
             const res = await fetch(BASE_URL);

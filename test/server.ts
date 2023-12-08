@@ -67,6 +67,8 @@ import server from "../index";
 const app = server()
 const router = app.router()
 
+const URL_PORT = 5555;
+
 app.get("/user", (req, res) => {
   res.status(200).json(req.body);
 });
@@ -83,6 +85,6 @@ router.options('/test', async (req, res) => {
 
 app.use('/', router);
 
-app.listen(5555, () => {
+app.listen(URL_PORT, () => {
   console.log('App is listening on port 3000')
 })
