@@ -62,16 +62,6 @@ export class Router implements RequestMethod {
   }
 
   attach(globalPath: string) {
-    // TODO: check if this is still necessary
-    // seems to be redundant
-    //
-    // this.localMiddlewares.forEach((mid) => {
-    //   this.middlewares.push({
-    //     path: path.join(globalPath, mid.path),
-    //     middlewareFunc: mid.middlewareFunc,
-    //   });
-    // });
-
     for (const k in this.localRequestMap) {
       const method = k;
       const reqArr: Array<RequestTuple> = this.localRequestMap[k];
