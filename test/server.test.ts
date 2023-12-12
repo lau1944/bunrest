@@ -46,6 +46,8 @@ app.get('/mid', (req, res, next) => {
     res.status(200).send('Middleware /mid');
 }, (req, res) => { });
 
+app.get('/mid/nomid', (req, res) => { res.status(200).send('No middleware /mid/nomid')});
+
 app.get('/mid/path', (req, res, next) => {
     res.status(200).send('Middleware /mid/path');
 }, (req, res) => { });
@@ -239,21 +241,20 @@ describe('router-test', () => {
                 server.stop();
             }
         });
-        // Delete is not working for bun, check (issues-667)[https://github.com/oven-sh/bun/issues/677]
-        // it('DELETE', async () => {
-        //     const server = app.listen(5555, () => {
-        //         console.log(`App is listening on port ${URL_PORT}`);
-        //     });
-        //     try {
-        //         const res = await fetch(BASE_URL, { method: 'DELETE' });
-        //         expect(res.status).toBe(200);
-        //         expect(await res.text()).toBe('DELETE /')
-        //     } catch (e) {
-        //         throw e;
-        //     } finally {
-        //         server.stop();
-        //     }
-        // });
+        it('DELETE', async () => {
+            const server = app.listen(5555, () => {
+                console.log(`App is listening on port ${URL_PORT}`);
+            });
+            try {
+                const res = await fetch(BASE_URL, { method: 'DELETE' });
+                expect(res.status).toBe(200);
+                expect(await res.text()).toBe('DELETE /')
+            } catch (e) {
+                throw e;
+            } finally {
+                server.stop();
+            }
+        });
         it('OPTIONS', async () => {
             const server = app.listen(URL_PORT, () => {
                 console.log(`App is listening on port ${URL_PORT}`);
@@ -372,7 +373,7 @@ describe('websocket test', () => {
 //         const server = app.listen(5555, () => {
 //             console.log(`App is listening on port ${URL_PORT}`);
 //         })
-
+//
 //         try {
 //             const res = await fetch(BASE_URL + '/some_random_route', { method: 'POST' });
 //             expect(res.status).toBe(500);
