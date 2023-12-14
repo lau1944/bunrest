@@ -3,8 +3,8 @@ import { BunResponse } from "../server/response";
 
 export class Chain {
     private index: number = 0;
-    private req: any;
-    private res: any;
+    private req: BunRequest;
+    private res: BunResponse;
     private middlewares: MiddlewareFunc[];
     private resolve: () => void;
 
