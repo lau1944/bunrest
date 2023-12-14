@@ -76,7 +76,7 @@ class BunServer implements RequestMethod {
     this.webSocketHandler = {
       message: msgHandler,
       open: extra?.open,
-      close: extra?.close, 
+      close: extra?.close,
       drain: extra?.drain,
     }
   }
@@ -149,7 +149,7 @@ class BunServer implements RequestMethod {
       async fetch(req1: Request) {
         const req: BunRequest = await that.bunRequest(req1);
         const res = that.responseProxy();
-        
+
         if (req.path.endsWith('/')) {
           req.path = req.path.slice(0, req.path.length)
         }
@@ -158,7 +158,7 @@ class BunServer implements RequestMethod {
         if (that.middlewares.length !== 0) {
           const plainMid = that.middlewares.filter((mid) => mid.path === "*");
           const chain = new Chain(req, res, plainMid);
-          chain.next();
+          await chain.run();
 
           if (res.isReady()) {
             return res.getResponse();
@@ -184,7 +184,7 @@ class BunServer implements RequestMethod {
 
         if (middlewares.length !== 0) {
           const chain = new Chain(req, res, middlewares);
-          chain.next();
+          await chain.run();
 
           if (res.isReady()) {
             return res.getResponse();
