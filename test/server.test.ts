@@ -46,11 +46,21 @@ app.get('/mid', (req, res, next) => {
     res.status(200).send('Middleware /mid');
 }, (req, res) => { });
 
+app.get('/mid/nomid', (req, res) => { res.status(200).send('No middleware /mid/nomid')});
+
+app.get('/mid/path', (req, res, next) => {
+    res.status(200).send('Middleware /mid/path');
+}, (req, res) => { });
+
+app.get('/mid/:id', (req, res, next) => {
+    res.status(200).send(`Middleware /mid/${req.params.id}`);
+}, (req, res) => { });
+
 app.get('/err', (req, res) => {
     throw new Error('Err');
 })
 
-//add error handler 
+//add error handler
 app.use((req, res, next, err) => {
     res.status(500).send('Err /err');
 });
@@ -67,12 +77,13 @@ app.ws((ws, msg) => {
     }
 })
 
-const BASE_URL = 'http://localhost:3000';
+const URL_PORT = 5555;
+const BASE_URL = `http://localhost:${URL_PORT}`;
 
 describe('http test', () => {
     it('GET', async () => {
-        const server = app.listen(3000, () => {
-            console.log('App is listening on port 3000');
+        const server = app.listen(URL_PORT, () => {
+            console.log(`App is listening on port ${URL_PORT}`);
         });
         try {
             const res = await fetch(BASE_URL);
@@ -85,8 +96,8 @@ describe('http test', () => {
         }
     });
     it('POST', async () => {
-        const server = app.listen(3000, () => {
-            console.log('App is listening on port 3000');
+        const server = app.listen(URL_PORT, () => {
+            console.log(`App is listening on port ${URL_PORT}`);
         });
         try {
             const res = await fetch(BASE_URL, { method: 'POST' });
@@ -99,8 +110,8 @@ describe('http test', () => {
         }
     });
     it('PATCH', async () => {
-        const server = app.listen(3000, () => {
-            console.log('App is listening on port 3000');
+        const server = app.listen(URL_PORT, () => {
+            console.log(`App is listening on port ${URL_PORT}`);
         });
         try {
             const res = await fetch(BASE_URL, { method: 'PATCH' });
@@ -113,8 +124,8 @@ describe('http test', () => {
         }
     });
     it('PUT', async () => {
-        const server = app.listen(3000, () => {
-            console.log('App is listening on port 3000');
+        const server = app.listen(URL_PORT, () => {
+            console.log(`App is listening on port ${URL_PORT}`);
         });
         try {
             const res = await fetch(BASE_URL, { method: 'PUT' });
@@ -127,8 +138,8 @@ describe('http test', () => {
         }
     });
     it('DELETE', async () => {
-        const server = app.listen(3000, () => {
-            console.log('App is listening on port 3000');
+        const server = app.listen(URL_PORT, () => {
+            console.log(`App is listening on port ${URL_PORT}`);
         });
         try {
             const res = await fetch(BASE_URL, { method: 'DELETE' });
@@ -141,8 +152,8 @@ describe('http test', () => {
         }
     });
     it('OPTIONS', async () => {
-        const server = app.listen(3000, () => {
-            console.log('App is listening on port 3000');
+        const server = app.listen(URL_PORT, () => {
+            console.log(`App is listening on port ${URL_PORT}`);
         });
         try {
             const res = await fetch(BASE_URL, { method: 'OPTIONS' });
@@ -155,8 +166,8 @@ describe('http test', () => {
         }
     });
     it('HEAD', async () => {
-        const server = app.listen(3000, () => {
-            console.log('App is listening on port 3000');
+        const server = app.listen(URL_PORT, () => {
+            console.log(`App is listening on port ${URL_PORT}`);
         });
         try {
             const res = await fetch(BASE_URL, { method: 'HEAD' });
@@ -175,8 +186,8 @@ describe('router-test', () => {
     const url = BASE_URL + '/route';
     it('/route', () => {
         it('GET', async () => {
-            const server = app.listen(3000, () => {
-                console.log('App is listening on port 3000');
+            const server = app.listen(URL_PORT, () => {
+                console.log(`App is listening on port ${URL_PORT}`);
             });
             try {
                 const res = await fetch(url);
@@ -189,8 +200,8 @@ describe('router-test', () => {
             }
         });
         it('POST', async () => {
-            const server = app.listen(3000, () => {
-                console.log('App is listening on port 3000');
+            const server = app.listen(URL_PORT, () => {
+                console.log(`App is listening on port ${URL_PORT}`);
             });
             try {
                 const res = await fetch(url, { method: 'POST' });
@@ -203,8 +214,8 @@ describe('router-test', () => {
             }
         });
         it('PATCH', async () => {
-            const server = app.listen(3000, () => {
-                console.log('App is listening on port 3000');
+            const server = app.listen(URL_PORT, () => {
+                console.log(`App is listening on port ${URL_PORT}`);
             });
             try {
                 const res = await fetch(url, { method: 'PATCH' });
@@ -217,8 +228,8 @@ describe('router-test', () => {
             }
         });
         it('PUT', async () => {
-            const server = app.listen(3000, () => {
-                console.log('App is listening on port 3000');
+            const server = app.listen(URL_PORT, () => {
+                console.log(`App is listening on port ${URL_PORT}`);
             });
             try {
                 const res = await fetch(url, { method: 'PUT' });
@@ -230,24 +241,23 @@ describe('router-test', () => {
                 server.stop();
             }
         });
-        // Delete is not working for bun, check (issues-667)[https://github.com/oven-sh/bun/issues/677]
-        // it('DELETE', async () => {
-        //     const server = app.listen(3000, () => {
-        //         console.log('App is listening on port 3000');
-        //     });
-        //     try {
-        //         const res = await fetch(BASE_URL, { method: 'DELETE' });
-        //         expect(res.status).toBe(200);
-        //         expect(await res.text()).toBe('DELETE /')
-        //     } catch (e) {
-        //         throw e;
-        //     } finally {
-        //         server.stop();
-        //     }
-        // });
+        it('DELETE', async () => {
+            const server = app.listen(5555, () => {
+                console.log(`App is listening on port ${URL_PORT}`);
+            });
+            try {
+                const res = await fetch(BASE_URL, { method: 'DELETE' });
+                expect(res.status).toBe(200);
+                expect(await res.text()).toBe('DELETE /')
+            } catch (e) {
+                throw e;
+            } finally {
+                server.stop();
+            }
+        });
         it('OPTIONS', async () => {
-            const server = app.listen(3000, () => {
-                console.log('App is listening on port 3000');
+            const server = app.listen(URL_PORT, () => {
+                console.log(`App is listening on port ${URL_PORT}`);
             });
             try {
                 const res = await fetch(url, { method: 'OPTIONS' });
@@ -260,8 +270,8 @@ describe('router-test', () => {
             }
         });
         it('HEAD', async () => {
-            const server = app.listen(3000, () => {
-                console.log('App is listening on port 3000');
+            const server = app.listen(URL_PORT, () => {
+                console.log(`App is listening on port ${URL_PORT}`);
             });
             try {
                 const res = await fetch(url, { method: 'HEAD' });
@@ -278,8 +288,8 @@ describe('router-test', () => {
 
 describe('middleware test', () => {
     it('middleware /', async () => {
-        const server = app.listen(3000, () => {
-            console.log('App is listening on port 3000');
+        const server = app.listen(URL_PORT, () => {
+            console.log(`App is listening on port ${URL_PORT}`);
         });
         try {
             const res = await fetch(BASE_URL + '/mid', { method: 'GET' });
@@ -291,15 +301,43 @@ describe('middleware test', () => {
             server.stop();
         }
     })
+    it('middleware / path', async () => {
+        const server = app.listen(URL_PORT, () => {
+            console.log(`App is listening on port ${URL_PORT}`);
+        });
+        try {
+            const res = await fetch(BASE_URL + '/mid/path', { method: 'GET' });
+            expect(res.status).toBe(200);
+            expect(await res.text()).toBe('Middleware /mid/path')
+        } catch (e) {
+            throw e;
+        } finally {
+            server.stop();
+        }
+    })
+    it('middleware / param', async () => {
+        const server = app.listen(URL_PORT, () => {
+            console.log(`App is listening on port ${URL_PORT}`);
+        });
+        try {
+            const res = await fetch(BASE_URL + '/mid/15', { method: 'GET' });
+            expect(res.status).toBe(200);
+            expect(await res.text()).toBe('Middleware /mid/15')
+        } catch (e) {
+            throw e;
+        } finally {
+            server.stop();
+        }
+    })
 })
 
 describe('websocket test', () => {
     it(('ws'), () => {
-        let server = app.listen(3000, () => {
-            console.log('App is listening on port 3000');
+        let server = app.listen(URL_PORT, () => {
+            console.log(`App is listening on port ${URL_PORT}`);
         });
         try {
-            const socket = new WebSocket("ws://localhost:3000");
+            const socket = new WebSocket(`ws://localhost:${URL_PORT}`);
             const msg = 'Hello world'
             // message is received
             socket.addEventListener("message", event => {
@@ -332,10 +370,10 @@ describe('websocket test', () => {
 // Delete this test because bun test would stop if any error throws, global handlers won't able to stop the throwing
 // describe('Error test', () => {
 //     it('unhandle route', async () => {
-//         const server = app.listen(3000, () => {
-//             console.log('App is listening on port 3000');
+//         const server = app.listen(5555, () => {
+//             console.log(`App is listening on port ${URL_PORT}`);
 //         })
-
+//
 //         try {
 //             const res = await fetch(BASE_URL + '/some_random_route', { method: 'POST' });
 //             expect(res.status).toBe(500);
@@ -345,8 +383,8 @@ describe('websocket test', () => {
 //         }
 //     });
 //     it('error /err', async () => {
-//         const server = app.listen(3000, () => {
-//             console.log('App is listening on port 3000');
+//         const server = app.listen(5555, () => {
+//             console.log(`App is listening on port ${URL_PORT}`);
 //         });
 //         try {
 //             const res = await fetch(BASE_URL + '/err', { method: 'GET' });

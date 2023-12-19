@@ -58,25 +58,15 @@ export class Router implements RequestMethod {
   }
 
   use(middleware: Handler) {
-    this.localMiddlewares.push({
-      path: "*",
-      middlewareFunc: middleware,
-    });
+    this.localMiddlewares.push(middleware);
   }
 
   attach(globalPath: string) {
-    this.localMiddlewares.forEach((mid) => {
-      this.middlewares.push({
-        path: path.join(globalPath, mid.path),
-        middlewareFunc: mid.middlewareFunc,
-      });
-    });
-
     for (const k in this.localRequestMap) {
       const method = k;
       const reqArr: Array<RequestTuple> = this.localRequestMap[k];
       reqArr.forEach((v, _) => {
-        this.requestMapFunc.apply(this, [method, path.join(globalPath, v.path), v.handler]);
+        this.requestMapFunc.apply(this, [method, path.join(globalPath, v.path), v.route.handler, v.route.middlewareFuncs]);
       });
     }
   }
@@ -85,31 +75,30 @@ export class Router implements RequestMethod {
     if (localPath === '/') {
       localPath = ''
     }
-    
-    for (let i = 0; i < handlers.length; ++i) {
-      const handler = handlers[i];
-      if (i == handlers.length - 1) {
-        this.submitToMap(method.toLowerCase(), localPath, handler);
-        break;
-      }
 
-      this.localMiddlewares.push({
-        path: localPath,
-        middlewareFunc: handler,
-      });
-    }
+    if (handlers.length < 1) return;
+    // Split the array
+    const middlewares = handlers.slice(0, -1); // Array with all elements except the last one
+    const handler = handlers[handlers.length - 1]; // Array with only the last element
+
+    this.submitToMap(method.toLowerCase(), localPath, handler, middlewares);
   }
 
-  private submitToMap(method: string, path: string, handler: Handler) {
+  private submitToMap(method: string, path: string, handler: Handler, middlewares: Middleware) {
     let targetMap: RequestTuple[] = this.localRequestMap[method];
     if (!targetMap) {
       this.localRequestMap[method] = [];
       targetMap = this.localRequestMap[method];
     }
 
+    const route = {
+      handler: handler,
+      middlewareFuncs: middlewares,
+    }
+
     targetMap.push({
       path,
-      handler,
+      route,
     });
   }
 }
