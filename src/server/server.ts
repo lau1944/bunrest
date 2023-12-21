@@ -107,10 +107,7 @@ class BunServer implements RequestMethod {
     // pass middleware or global error handler
     else {
       if (arg1.length === 3) {
-        this.middlewares.push({
-          path: "*",
-          middlewareFunc: arg1 as Handler,
-        });
+        this.middlewares.push(arg1 as Handler);
       } else if (arg1.length === 4) {
         this.errorHandlers.push(arg1 as Handler);
       }
@@ -154,48 +151,6 @@ class BunServer implements RequestMethod {
           req.path = req.path.slice(0, req.path.length)
         }
 
-        // middlewares handler
-        if (that.middlewares.length !== 0) {
-          const plainMid = that.middlewares.filter((mid) => mid.path === "*");
-          const chain = new Chain(req, res, plainMid);
-          await chain.run();
-
-          if (res.isReady()) {
-            return res.getResponse();
-          }
-
-          if (!chain.isFinish()) {
-            throw new Error("Please call next() at the end of your middleware");
-          }
-        }
-
-        const middlewares = [];
-        for (let i = that.middlewares.length - 1; i >= 0; --i) {
-          const target = that.middlewares[i];
-          if (target.path === "*") {
-            continue;
-          }
-
-          if (target.path === req.path) {
-            middlewares.push(target);
-            break;
-          }
-        }
-
-        if (middlewares.length !== 0) {
-          const chain = new Chain(req, res, middlewares);
-          await chain.run();
-
-          if (res.isReady()) {
-            return res.getResponse();
-          }
-
-          if (!chain.isFinish()) {
-            throw new Error("Please call next() at the end of your middleware");
-          }
-        }
-
-        // request handler
         const tree: TrieTree<string, Handler> =
           that.requestMap[req.method.toLowerCase()];
 
@@ -204,25 +159,52 @@ class BunServer implements RequestMethod {
         }
 
         const leaf = tree.get(req.path);
-        const handlers: Handler[] = leaf.node?.getHandlers();
-        // append req route params
-        req.params = leaf.routeParams;
 
         // fix (issue 4: unhandle route did not throw an error)
-        if (!handlers || handlers.length === 0) {
+        if (!leaf.node) {
           console.error(`Cannot ${req.method} ${req.path}`);
           res.status(404).send(`${req.method} ${req.path} with a 404`)
           return res.getResponse()
         }
 
-        // fix (issue 13) : How to make it work with async functions or Promises?
-        // fix where response data cannot be processed in promise block
-        for (let i = 0; i < handlers.length; ++i) {
-          const response = handlers[i].apply(that, [req, res]);
-          if (response instanceof Promise) {
-            await response;
+        // append req route params
+        req.params = leaf.routeParams;
+
+        // middlewares handler
+        if (that.middlewares.length !== 0) {
+          const chain = new Chain(req, res, that.middlewares);
+          await chain.run();
+
+          if (res.isReady()) {
+            return res.getResponse();
+          }
+
+          if (!chain.isFinish()) {
+            throw new Error("Please call next() at the end of your middleware");
           }
         }
+
+        const handler: Handler[] = leaf.node?.getHandler();
+        const middlewares: Handler[] = leaf.node?.getMiddlewares();
+
+        const chain = new Chain(req, res, middlewares);
+        await chain.run();
+
+        if (res.isReady()) {
+          return res.getResponse();
+        }
+
+        if (!chain.isFinish()) {
+          throw new Error("Please call next() at the end of your middleware");
+        }
+
+        // fix (issue 13) : How to make it work with async functions or Promises?
+        // fix where response data cannot be processed in promise block
+        const response = handler.apply(that, [req, res]);
+        if (response instanceof Promise) {
+          await response;
+        }
+
         return res.getResponse();
       },
       websocket: this.webSocketHandler,
@@ -301,26 +283,24 @@ class BunServer implements RequestMethod {
       key = ''
     }
 
-    for (let i = 0; i < handlers.length; ++i) {
-      const handler = handlers[i];
-      if (i == handlers.length - 1) {
-        this.submitToMap(method.toLowerCase(), path, handler);
-        break;
-      }
+    if (handlers.length < 1) return;
+    // Split the array
+    const middlewares = handlers.slice(0, -1);
+    const handler = handlers[handlers.length - 1];
 
-      this.middlewares.push({
-        path: key,
-        middlewareFunc: handler,
-      });
-    }
+    this.submitToMap(method.toLowerCase(), path, handler, middlewares);
   }
 
-  private submitToMap(method: string, path: string, handler: Handler) {
+  private submitToMap(method: string, path: string, handler: Handler, middlewares: Middleware) {
     let targetTree: TrieTree<string, Handler> = this.requestMap[method];
     if (!targetTree) {
       this.requestMap[method] = new TrieTree();
       targetTree = this.requestMap[method];
     }
-    targetTree.insert(path, handler);
+    const route = {
+      handler: handler,
+      middlewareFuncs: middlewares,
+    }
+    targetTree.insert(path, route);
   }
 }

@@ -8,6 +8,11 @@ export type Handler = (
   err?: Error
 ) => void | Promise<any>;
 
+export type Route = (
+  handler: Handler,
+  middlewareFuncs: Handler[]
+) => void | Promise<any>;
+
 export type MiddlewareFunc = (
   req: Request,
   res: BunResponse,
