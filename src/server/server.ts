@@ -173,7 +173,7 @@ class BunServer implements RequestMethod {
         // middlewares handler
         if (that.middlewares.length !== 0) {
           const chain = new Chain(req, res, that.middlewares);
-          chain.next();
+          await chain.run();
 
           if (res.isReady()) {
             return res.getResponse();
@@ -188,7 +188,7 @@ class BunServer implements RequestMethod {
         const middlewares: Handler[] = leaf.node?.getMiddlewares();
 
         const chain = new Chain(req, res, middlewares);
-        chain.next();
+        await chain.run();
 
         if (res.isReady()) {
           return res.getResponse();

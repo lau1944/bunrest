@@ -1,33 +1,54 @@
-import { BunRequest, Middleware } from "../server/request";
+import { BunRequest, MiddlewareFunc } from "../server/request";
 import { BunResponse } from "../server/response";
 
-export function Chain(req: BunRequest, res: BunResponse, middlewares: Middleware[]) {
-    this.middlewares = middlewares.map((mid) => {
-        return () => {
-            mid(req, res, this.next);
-            return res.isReady();
-        }
-    });
-    this.isReady = false;
+export class Chain {
+    private index: number = 0;
+    private req: BunRequest;
+    private res: BunResponse;
+    private middlewares: MiddlewareFunc[];
+    private resolve: () => void;
 
-    this.next = (err: Error) => {
+    constructor(req: BunRequest, res: BunResponse, middlewares: MiddlewareFunc[]) {
+        this.req = req;
+        this.res = res;
+        this.middlewares = middlewares;
+    }
+
+    private async processNext(err: Error) {
         if (err) {
             throw err;
         }
+        if (this.index < this.middlewares.length) {
+            const middleware = this.middlewares[this.index++];
+            let nextCalled = false;
 
-        if (this.isFinish()) {
-            return;
-        }
+            const nextWrapper = (err: Error) => {
+                nextCalled = true;
+                this.processNext(err);
+            };
 
-        const cur = this.middlewares.shift();
-        this.isReady = cur();
+            await middleware(this.req, this.res, nextWrapper);
 
-        if (this.isReady) {
-            return;
+            if (!nextCalled) {
+              this.resolve();
+            }
+        } else {
+            this.resolve();
         }
     }
 
-    this.isFinish = () => {
-        return this.middlewares.length === 0;
-    };
+    public run(): Promise<void> {
+        return new Promise((resolve) => {
+            this.resolve = resolve;
+            this.processNext();
+        });
+    }
+
+    public isFinish(): boolean {
+        return this.index === this.middlewares.length;
+    }
+
+    public isReady(): boolean {
+        return !this.isFinish();
+    }
 }
