@@ -51,6 +51,7 @@ export interface BunRequest {
 }
 
 export interface SSLOptions {
+  reusePort: boolean;
   keyFile: string;
   certFile: string;
   passphrase?: string;

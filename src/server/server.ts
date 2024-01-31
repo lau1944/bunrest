@@ -136,6 +136,7 @@ class BunServer implements RequestMethod {
     const that = this;
     return Bun.serve({
       port,
+      reusePort: options?.reusePort,
       keyFile: options?.keyFile,
       certFile: options?.certFile,
       passphrase: options?.passphrase,
