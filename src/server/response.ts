@@ -25,6 +25,10 @@ export class BunResponse {
         this.response = new Response(body, this.options);
     }
 
+    redirect(url: string, status: number = 302): void {
+        this.response = Response.redirect(url, status);
+    }
+
     // nodejs way to set headers
     setHeader(key: string, value: any) {
         if (!key || !value) {
