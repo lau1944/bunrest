@@ -39,7 +39,7 @@ class BunServer implements RequestMethod {
   private readonly requestMap: RequestMapper = {};
   private readonly middlewares: Middleware[] = [];
   private readonly errorHandlers: Handler[] = [];
-  private webSocketHandler: WebSocketHandler<any> | undefined
+  private webSocketHandler: WebSocketHandler<unknown> | undefined
   private webSocketData: <DataType>(req: BunRequest) => { data: DataType} | undefined
 
   get(path: string, ...handlers: Handler[]) {
