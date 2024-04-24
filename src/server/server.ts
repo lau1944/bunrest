@@ -40,7 +40,7 @@ class BunServer implements RequestMethod {
   private readonly middlewares: Middleware[] = [];
   private readonly errorHandlers: Handler[] = [];
   private webSocketHandler: WebSocketHandler<unknown> | undefined
-  private webSocketData: <DataType>(req: BunRequest) => { data: DataType} | undefined
+  private webSocketData: <DataType>(req: BunRequest) => Promise<{ data: DataType}> | undefined
 
   get(path: string, ...handlers: Handler[]) {
     this.delegate(path, "GET", handlers);
@@ -73,14 +73,14 @@ class BunServer implements RequestMethod {
   /**
    * websocket interface
    */
-  ws<DataType = undefined>(msgHandler: RestSocketHandler<DataType>, extra: ExtraHandler<DataType> = null, data?: (req: BunRequest) => DataType) {
+  ws<DataType = undefined>(msgHandler: RestSocketHandler<DataType>, extra: ExtraHandler<DataType> = null, data?: (req: BunRequest) => DataType | Promise<DataType>) {
     this.webSocketHandler = {
       message: msgHandler,
       open: extra?.open,
       close: extra?.close,
       drain: extra?.drain,
     } as WebSocketHandler<DataType>;
-    this.webSocketData<DataType> = data ? (req) => ({data: data(req)}) : undefined;
+    this.webSocketData<DataType> = data ? async (req) => ({data: await data(req)}) : undefined;
   }
 
   /**
@@ -151,7 +151,7 @@ class BunServer implements RequestMethod {
         const res = that.responseProxy();
 
         //Allow web socket server to function:
-        if(that.webSocketHandler && server?.upgrade(req1, that.webSocketData(req))) {
+        if(that.webSocketHandler && server?.upgrade(req1, await that.webSocketData(req))) {
           return;
         }
 
